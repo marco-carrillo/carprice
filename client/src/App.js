@@ -4,34 +4,16 @@
 //  will come from clicking on a specific items wrapped within Books.              */
 //**********************************************************************************/
 import React from "react";
+// import Button from "@material-ui/core/Button";
+import Button from '@material-ui/core/Button';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Books from "./pages/Books";
-// import Detail from "./pages/Detail";
-import NoMatch from "./pages/NoMatch";
-import Nav from "./components/Nav";
-import Saved from "./pages/Saved";
+import SignInSide from './components/SignInSide'
 
 function App() {
   return (
-    <Router>
-      <div>
-        <Nav />
-        <Switch>
-          <Route exact path={["/", "/search"]}>
-            <Books />
-          </Route>
-          <Route exact path={"/saved"}>
-            <Saved />
-          </Route>
-          {/* <Route exact path="/books/:id">
-            <Detail />
-          </Route> */}
-          <Route>
-            <NoMatch />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+
+    <SignInSide />
+
   );
 }
 

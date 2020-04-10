@@ -106,6 +106,7 @@ export default function SignInSide() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={() => { alert('I was clicked'); }}
             >
               Sign In
             </Button>

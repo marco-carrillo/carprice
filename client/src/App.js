@@ -4,16 +4,31 @@
 //  will come from clicking on a specific items wrapped within Books.              */
 //**********************************************************************************/
 import React from "react";
-// import Button from "@material-ui/core/Button";
-import Button from '@material-ui/core/Button';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import SignInSide from './components/SignInSide'
+import NoMatch from "./components/nomatch";
+import Navbar from "./components/navbar";
+import Selling from "./pages/selling";
 
 function App() {
+  console.log(process.env.REACT_APP_MKTCHECK_APIKEY);
   return (
-
-    <SignInSide />
-
+    <Router>
+      <div>
+        <Navbar />
+        <Switch>
+          <Route exact path={["/", "/selling"]}>
+            <Selling />
+          </Route>
+          <Route exact path={"/buying"}>
+          </Route>
+          <Route exact path="/preferences">
+          </Route>
+          <Route>
+            <NoMatch />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 

@@ -1,3 +1,19 @@
 .form-group{
     display: inline-block;
 }
+
+#VIN{
+    width: 25%;
+}
+
+#mileage{
+    width: 10%;
+}
+
+#range{
+    width:10%;
+}
+
+#ZIP{
+    width:10%;
+}

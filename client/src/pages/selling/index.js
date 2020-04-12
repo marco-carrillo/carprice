@@ -5,7 +5,8 @@
 import React,{useState} from "react";
 import './index.style.css'
 import axios from 'axios';
-import LocalResultsData from './LocalResultsData';
+import LocalResultsStats from './LocalResultsStats';
+import LocalResultsTable from './LocalResultsTable';
 
 const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
@@ -14,6 +15,7 @@ const Selling = () =>{
     const [cars,setCars] =useState();                             // contains all cars retrieved by API
     const [avgPrice,setAvgPrice] =useState(0);                    //  National average price
     const [medPrice,setMedPrice] =useState(0);                    //  National median price
+    const [localCars,setLocalCars]=useState();                    //  Info with local car information
     const [localAvgPrice,setLocalAvgPrice] =useState(0);          //  Local average price
     const [localMedPrice,setLocalMedPrice] =useState(0);          //  Local median price
     const [localNbrCars,setLocalNbrCars]=useState(0);             //  Local number of cars
@@ -110,7 +112,6 @@ const Selling = () =>{
       let zipcode='23120';
       let API_key=console.log(process.env.REACT_APP_MKTCHECK_APIKEY);
       let start=0;
-      API_key=`OLz1uwITcoEWceLvHRW3jPQQS19O9E19`;
 
       let APIQuery=`https://marketcheck-prod.apigee.net/v2/search/car/active`+
                     `?api_key=${API_key}&radius=1000&zip=${zipcode}`+
@@ -154,7 +155,7 @@ const Selling = () =>{
   //  Second part of the API (manipulating data)  */
   //###############################################/
   async function handleFormSubmit(event) {
-        event.preventDefault();
+    event.preventDefault();
         let data=JSON.parse(localStorage.getItem("data"));
         console.log(data);
 
@@ -182,18 +183,11 @@ const Selling = () =>{
         })
 
         let local_prices=data_local.map(a=>a.price);  // Extracting only the prices
-    
-        console.log(local_prices);  
-        console.log('Median ',median_price(local_prices));
-        console.log('Average ',average_price(local_prices));
-        console.log('Min ',Math.min.apply(Math,local_prices));
-        console.log('Max ',Math.max.apply(Math,local_prices));
-
-        setLocalAvgPrice(average_price(local_prices));
-        setLocalMedPrice(median_price(local_prices));
+        setLocalCars(data_local);
+        setLocalAvgPrice(Math.floor(average_price(local_prices)));
+        setLocalMedPrice(Math.floor(median_price(local_prices)));
         setLocalNbrCars(local_prices.length);
         setLocalDataReady(true);
-        
   }
 
 
@@ -250,7 +244,14 @@ const Selling = () =>{
             <div className="row">
                 <div className="col-md-12">
                     {localDataReady ? (
-                          <LocalResultsData range={mileageRange} nbr={localNbrCars} avg={localAvgPrice} med={localMedPrice}/>
+                        <div>
+                          <LocalResultsStats title="Local cars for sale by Dealer"
+                                             range={mileageRange} 
+                                             nbr={localNbrCars} 
+                                             avg={localAvgPrice} 
+                                             med={localMedPrice}/>
+                          <LocalResultsTable cars={localCars}/>
+                        </div>
                               ) : (
                             <h3></h3>
                      )}

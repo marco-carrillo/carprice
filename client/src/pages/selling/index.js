@@ -8,6 +8,7 @@ import axios from 'axios';
 import ResultsStats from './ResultsStats';
 import ResultsTable from './ResultsTable';
 import NationalChart from './NationalChart';
+import NumbersWithCommas from '../../utils/NumbersWithCommas';
 
 const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
@@ -200,9 +201,7 @@ const Selling = () =>{
         setAvgPrice(Math.floor(average_price(national_prices)));
         setMedPrice(Math.floor(median_price(national_prices)));
         setNbrCars(national_prices.length);
-
       }
-
 
   function handleNewSearch(event){
       event.preventDefault();
@@ -228,15 +227,6 @@ const Selling = () =>{
                                         id="mileage"
                                         name="mileage"
                                         placeholder="Car Mileage"/>
-  
-                    {/* <label className="mx-2 mb-2 text-white">±</label>
-                   <select className="custom-select mb-2 mr-sm-2" id="range" name="range" onChange={handleInputChange}>
-                        <option default>2,500 miles</option>
-                        <option value="1000">1,000 miles</option>
-                        <option value="2500">2,500 miles</option>
-                        <option value="5000">5,000 miles</option>
-                        <option value="10000">10,000 miles</option>
-                    </select> */}
 
                     <label className="mx-2 mb-2 text-white">Zip Code</label>
                     <input type="text" className="form-control mb-2 mr-sm-4"
@@ -258,14 +248,14 @@ const Selling = () =>{
                 <div className="col-md-12">
                     {localDataReady ? (
                         <div>
-                          <ResultsStats title="Local cars for sale by Dealer"
+                          <ResultsStats title={`Local cars for sale by Dealer (cars with ${NumbersWithCommas(formObject.mileage-mileageRange)} and ${NumbersWithCommas(formObject.mileage-(-mileageRange))} miles located within 150 miles from ZIP code ${formObject.ZIP})`}
                                             distance="within 150 miles"
                                              range={mileageRange} 
                                              nbr={localNbrCars} 
                                              avg={localAvgPrice} 
                                              med={localMedPrice}/>
                           <ResultsTable cars={localCars}/>
-                          <ResultsStats title="National cars for sale by Dealer"
+                          <ResultsStats title={`Cars for sale by Dealer nationwide with mileage between ${NumbersWithCommas(formObject.mileage-mileageRange)} and ${NumbersWithCommas(formObject.mileage-(-mileageRange))}`}
                                             distance="nationwide"
                                              range={mileageRange} 
                                              nbr={nbrCars} 

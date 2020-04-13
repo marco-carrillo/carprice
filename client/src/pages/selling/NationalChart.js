@@ -7,7 +7,6 @@ import ResultsTable from "./ResultsTable";
 
 const NationalChart=(props)=> {
     const [showCarsfromState, setShowCarsfromState] = useState('None');    // All variables entered by user
-    const [statesInSearch, setStatesInSearch] = useState([]);                // List of all states represented in search
 
 //#####################################################################################//
 //  This function will sumarize the cars by state, together with the minimun, maximum  //

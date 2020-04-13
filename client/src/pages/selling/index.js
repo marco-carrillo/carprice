@@ -14,10 +14,14 @@ const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
     const [newSearch, setnewSearch] = useState(true);             // Whether a new search was started
     const [localDataReady, setLocalDataReady] = useState(false);  // Whether data is ready or not
-    const [cars,setCars] =useState();                             // contains all cars retrieved by API
+    const [allCars,setAllCars] =useState();                       // contains comparable cars retrieved by API
+    const [allAvgPrice,setAllAvgPrice] =useState(0);              //  National average price
+    const [allMedPrice,setAllMedPrice] =useState(0);              //  National median price
+    const [allNbrCars,setAllNbrCars]=useState(0);                 //  Local number of cars
+    const [cars,setCars] =useState();                             // contains comparable cars retrieved by API
     const [avgPrice,setAvgPrice] =useState(0);                    //  National average price
     const [medPrice,setMedPrice] =useState(0);                    //  National median price
-    const [nbrCars,setNbrCars]=useState(0);                  //  Local number of cars
+    const [nbrCars,setNbrCars]=useState(0);                       //  Local number of cars
     const [localCars,setLocalCars]=useState();                    //  Info with local car information
     const [localAvgPrice,setLocalAvgPrice] =useState(0);          //  Local average price
     const [localMedPrice,setLocalMedPrice] =useState(0);          //  Local median price
@@ -112,7 +116,7 @@ const Selling = () =>{
       //******************************************/
       //  Setting the API query to call the API  */
       //******************************************/
-      let zipcode='23120';
+      let zipcode=formObject.ZIP;
       let API_key=console.log(process.env.REACT_APP_MKTCHECK_APIKEY);
       let start=0;
 
@@ -151,7 +155,6 @@ const Selling = () =>{
 
         console.log(data);  // complete data set
         localStorage.setItem("data",JSON.stringify(data));
-
   };
 
   //###############################################/
@@ -165,7 +168,7 @@ const Selling = () =>{
         //  After getting the results from the API, will do some data cleaning  */
         //  any results that don't have a price will be eliminated              */
         //***********************************************************************/
-        let data_clean=data.filter(function(car){return car.price>0});
+        let data_clean=data.filter(function(car){return car.price>0 && car.miles>0  });
         setCars(data_clean);
 
         //*******************************************************************************/
@@ -188,7 +191,7 @@ const Selling = () =>{
         setLocalDataReady(true);
 
         //*******************************************************************************/
-        //  The first step is to obtain a "national price", which is the median price   */
+        //  The second step is to obtain a "national price", which is the median price  */
         //  of the car broken down by state, minimun, maximum. median prices            */
         //*******************************************************************************/
 
@@ -201,6 +204,18 @@ const Selling = () =>{
         setAvgPrice(Math.floor(average_price(national_prices)));
         setMedPrice(Math.floor(median_price(national_prices)));
         setNbrCars(national_prices.length);
+
+        //*******************************************************************************/
+        //  The third step is to obtain a "national price" for all similar cars         */ 
+        //  regardless of the number of miles, or distance.  This is different from the */
+        //  "national price" since it considers mileage while here we do not            */
+        //*******************************************************************************/
+        national_prices=data_clean.map(a=>a.price);  // Extracting only the prices
+        setAllCars(data_clean);
+        setAllAvgPrice(Math.floor(average_price(national_prices)));
+        setAllMedPrice(Math.floor(median_price(national_prices)));
+        setAllNbrCars(national_prices.length);
+
       }
 
   function handleNewSearch(event){
@@ -261,7 +276,12 @@ const Selling = () =>{
                                              nbr={nbrCars} 
                                              avg={avgPrice} 
                                              med={medPrice}/>
-                          <NationalChart title="XYZ" cars={cars}/>
+                          <NationalChart cars={cars}/>
+                          <ResultsStats title={`Cars for sale by Dealer nationwide all mileage`}
+                                             nbr={allNbrCars} 
+                                             avg={allAvgPrice} 
+                                             med={allMedPrice}/>
+                          <NationalChart cars={allCars}/>
                         </div>
                               ) : (
                             <h3></h3>

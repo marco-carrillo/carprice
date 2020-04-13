@@ -5,14 +5,10 @@
 import React from "react";
 import axios from "axios";
 import NumbersWithCommas from '../../utils/NumbersWithCommas';
-import './LocalResultsTable.style.css'
+import './ResultsTable.style.css'
 
-function LocalResultsTable(props){
-    console.log(props);
+function ResultsTable(props){
     let data=props.cars;
-    console.log(data);
-    console.log(data[0]);
-    console.log(data[0].media.photo_links[0]);
  
     //***************************************************************************/
     //  If user clicks on "save" button, then calls API to save the information */
@@ -50,7 +46,7 @@ function LocalResultsTable(props){
                         <tr key={car.id}>
                             <td data-th="Image" className="align-middle text-center">
                                 <a href={car.vdp_url} target="_blank" rel="noopener noreferrer">
-                                    <img src={(car.media) ? (car.media.photo_links[0]) : "N/A"} 
+                                    <img src={(car.media) ? (car.media.photo_links[0]) : require("../../pictures/3ZUsNJhi_Ik.jpg")} 
                                     alt="car pic" className="img-responsive car-pic"/>
                                 </a>
                             </td>
@@ -83,4 +79,4 @@ function LocalResultsTable(props){
     )
 }
 
-export default LocalResultsTable;
+export default ResultsTable;

@@ -5,8 +5,9 @@
 import React,{useState} from "react";
 import './index.style.css'
 import axios from 'axios';
-import LocalResultsStats from './LocalResultsStats';
-import LocalResultsTable from './LocalResultsTable';
+import ResultsStats from './ResultsStats';
+import ResultsTable from './ResultsTable';
+import NationalChart from './NationalChart';
 
 const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
@@ -15,6 +16,7 @@ const Selling = () =>{
     const [cars,setCars] =useState();                             // contains all cars retrieved by API
     const [avgPrice,setAvgPrice] =useState(0);                    //  National average price
     const [medPrice,setMedPrice] =useState(0);                    //  National median price
+    const [nbrCars,setNbrCars]=useState(0);                  //  Local number of cars
     const [localCars,setLocalCars]=useState();                    //  Info with local car information
     const [localAvgPrice,setLocalAvgPrice] =useState(0);          //  Local average price
     const [localMedPrice,setLocalMedPrice] =useState(0);          //  Local median price
@@ -157,26 +159,21 @@ const Selling = () =>{
   async function handleFormSubmit(event) {
     event.preventDefault();
         let data=JSON.parse(localStorage.getItem("data"));
-        console.log(data);
 
-        //*****************************************************************************/
-        //  cleaning up the data, eliminating any results that don't have a price
-        //*****************************************************************************/
+        //***********************************************************************/
+        //  After getting the results from the API, will do some data cleaning  */
+        //  any results that don't have a price will be eliminated              */
+        //***********************************************************************/
         let data_clean=data.filter(function(car){return car.price>0});
-        setCars(data);
-        calculate_stats(data);
+        setCars(data_clean);
 
         //*******************************************************************************/
         //  The first step is to obtain the "local price", which is the median price    */
         //  of the car within the mileage indicated by the user within 150 miles        */
         //*******************************************************************************/
-
         setMileageRange(getRange(formObject.mileage));
         let lower_miles=parseInt(formObject.mileage)-parseInt(getRange(formObject.mileage));
         let higher_miles=parseInt(formObject.mileage)+parseInt(getRange(formObject.mileage));
-
-        console.log(lower_miles);
-        console.log(higher_miles);
 
         let data_local=data_clean.filter(function(car){
             return car.miles>=lower_miles && car.miles<= higher_miles && car.dist<150
@@ -188,7 +185,23 @@ const Selling = () =>{
         setLocalMedPrice(Math.floor(median_price(local_prices)));
         setLocalNbrCars(local_prices.length);
         setLocalDataReady(true);
-  }
+
+        //*******************************************************************************/
+        //  The first step is to obtain a "national price", which is the median price   */
+        //  of the car broken down by state, minimun, maximum. median prices            */
+        //*******************************************************************************/
+
+        let data_national=data_clean.filter(function(car){
+          return car.miles>=lower_miles && car.miles<= higher_miles
+        })
+      
+        let national_prices=data_national.map(a=>a.price);  // Extracting only the prices
+        setCars(data_national);
+        setAvgPrice(Math.floor(average_price(national_prices)));
+        setMedPrice(Math.floor(median_price(national_prices)));
+        setNbrCars(national_prices.length);
+
+      }
 
 
   function handleNewSearch(event){
@@ -216,14 +229,14 @@ const Selling = () =>{
                                         name="mileage"
                                         placeholder="Car Mileage"/>
   
-                    <label className="mx-2 mb-2 text-white">±</label>
-`                   <select className="custom-select mb-2 mr-sm-2" id="range" name="range" onChange={handleInputChange}>
+                    {/* <label className="mx-2 mb-2 text-white">±</label>
+                   <select className="custom-select mb-2 mr-sm-2" id="range" name="range" onChange={handleInputChange}>
                         <option default>2,500 miles</option>
                         <option value="1000">1,000 miles</option>
                         <option value="2500">2,500 miles</option>
                         <option value="5000">5,000 miles</option>
                         <option value="10000">10,000 miles</option>
-                    </select>
+                    </select> */}
 
                     <label className="mx-2 mb-2 text-white">Zip Code</label>
                     <input type="text" className="form-control mb-2 mr-sm-4"
@@ -245,12 +258,20 @@ const Selling = () =>{
                 <div className="col-md-12">
                     {localDataReady ? (
                         <div>
-                          <LocalResultsStats title="Local cars for sale by Dealer"
+                          <ResultsStats title="Local cars for sale by Dealer"
+                                            distance="within 150 miles"
                                              range={mileageRange} 
                                              nbr={localNbrCars} 
                                              avg={localAvgPrice} 
                                              med={localMedPrice}/>
-                          <LocalResultsTable cars={localCars}/>
+                          <ResultsTable cars={localCars}/>
+                          <ResultsStats title="National cars for sale by Dealer"
+                                            distance="nationwide"
+                                             range={mileageRange} 
+                                             nbr={nbrCars} 
+                                             avg={avgPrice} 
+                                             med={medPrice}/>
+                          <NationalChart title="XYZ" cars={cars}/>
                         </div>
                               ) : (
                             <h3></h3>

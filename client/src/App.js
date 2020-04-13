@@ -10,8 +10,6 @@ import Navbar from "./components/navbar";
 import Selling from "./pages/selling";
 
 function App() {
-  console.log(process.env.REACT_APP_MKTCHECK_APIKEY);
-  console.log(process.env);
   return (
     <Router>
       <div>

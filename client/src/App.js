@@ -7,7 +7,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import NoMatch from "./components/nomatch";
 import Navbar from "./components/navbar";
-import Selling from "./pages/selling";
+import Search from "./pages/search";
 
 function App() {
   return (
@@ -15,10 +15,10 @@ function App() {
       <div>
         <Navbar />
         <Switch>
-          <Route exact path={["/", "/selling"]}>
-            <Selling />
+          <Route exact path={["/", "/search"]}>
+            <Search />
           </Route>
-          <Route exact path={"/buying"}>
+          <Route exact path={"/saved"}>
           </Route>
           <Route exact path="/preferences">
           </Route>

@@ -163,6 +163,7 @@ const Selling = () =>{
   async function handleFormSubmit(event) {
     event.preventDefault();
         let data=JSON.parse(localStorage.getItem("data"));
+        console.log(data);
 
         //***********************************************************************/
         //  After getting the results from the API, will do some data cleaning  */

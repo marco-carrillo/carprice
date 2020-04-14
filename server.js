@@ -13,6 +13,7 @@ require('dotenv').config();
 //************************************************************/
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
@@ -26,7 +27,7 @@ app.use(routes);
 //*******************************************/
 // Connecting to the Mongo DB via Mongoose  */
 //*******************************************/
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/googlebooks");
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/VINCarPrices");
 
 //********************************************/
 // Start the API server to listen for calls  */

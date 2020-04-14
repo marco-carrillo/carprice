@@ -10,28 +10,28 @@ function Navbar() {
     <nav className="navbar navbar-expand-lg navbar-light bg-light menu">
     <div>
         <ul className="navbar-nav">
+          <li className="nav-item">
+              <NavLink
+                to="/search"
+                className="nav-link menuItem"
+              >
+                Search for Car
+              </NavLink>
+          </li>
+          <li className="nav-item">
+              <NavLink
+                to="/saved"
+                className="nav-link menuItem"
+              >
+                Buying a Car
+              </NavLink>
+          </li>
           <li className="nav-item menuItem">
               <NavLink
                 to="/preferences"
                 className="nav-link"
               >
                 User Preferences
-              </NavLink>
-          </li>
-          <li className="nav-item">
-              <NavLink
-                to="/selling"
-                className="nav-link menuItem"
-              >
-                Selling a Car
-              </NavLink>
-          </li>
-          <li className="nav-item">
-              <NavLink
-                to="/buying"
-                className="nav-link menuItem"
-              >
-                Buying a Car
               </NavLink>
           </li>
         </ul>

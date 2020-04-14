@@ -2,11 +2,9 @@
 //  Manages all API routes for the server. */
 //******************************************/
 const router = require("express").Router();
-const bookRoutes = require("./books");
-// const googleAPI=require("./googleAPI");
+const carRoutes = require("./carRoutes");
 
-// Book routes
-router.use("/books", bookRoutes);
-// router.use("/googleAPI",googleAPI)
-
+// Car routes
+router.use("/cars", carRoutes);
+  
 module.exports = router;

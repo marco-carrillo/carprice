@@ -11,7 +11,7 @@ const apiRoutes = require("./api");
 router.use("/api", apiRoutes);
 
 //*****************************************************************/
-// All non-API routes (static and not) are send to the React app  */
+// All non-API routes (static and not) are sent to the React app  */
 //*****************************************************************/
 router.use(function(req, res) {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));

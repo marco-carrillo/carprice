@@ -9,6 +9,7 @@ import ResultsStats from './ResultsStats';
 import ResultsTable from './ResultsTable';
 import NationalChart from './NationalChart';
 import NumbersWithCommas from '../../utils/NumbersWithCommas';
+import CarTable from './CarTable';
 
 const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
@@ -289,6 +290,7 @@ const Selling = () =>{
                      )}
                 </div>
             </div>
+            <CarTable />
 
         </div>
     )

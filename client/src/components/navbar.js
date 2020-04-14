@@ -31,7 +31,7 @@ function Navbar() {
                 to="/preferences"
                 className="nav-link"
               >
-                User Preferences
+                Financial cost
               </NavLink>
           </li>
         </ul>

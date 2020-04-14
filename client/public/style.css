@@ -1,0 +1,10 @@
+html1 {
+    zoom: 0.9;
+    -moz-transform: scale(0.9);
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+}
+
+html {
+    transform: scale(0.9, 1); /* Equal to scaleX(2) scaleY(0.5) */
+  }

@@ -1,39 +1,24 @@
 //**********************************************************************************/
 //  Following component will load a dataTable with all of the information required */
-//  so that the user can see all of the cars returned by the API                   */
+//  so that the user can see all of the cars returned by the Google books API     */
 //**********************************************************************************/
-import React, {useState} from "react";
+import React from "react";
 import axios from "axios";
 import NumbersWithCommas from '../../utils/NumbersWithCommas';
 import './ResultsTable.style.css'
 
 function ResultsTable(props){
     let data=props.cars;
-    const [btncolor, setbtncolor] = useState(Array(data.length).fill("#20c997"));
-    const [btntext, setbtntext] = useState(Array(data.length).fill("Save"));
  
     //***************************************************************************/
     //  If user clicks on "save" button, then calls API to save the information */
     //  in the MongoDb collection                                               */
     //***************************************************************************/
-    function saveCar(carInfo,index){
-        axios.post('/api/cars',carInfo)
+    function deleteCar(carInfo){
+        axios.delete(`/api/cars/${carInfo._id}`)
              .then(response=>{
                  console.log(`Successful response: ${response}`);
-
-                 //*************************************/
-                 //  Updating color and text of button */
-                 //*************************************/
-                 let x=[];
-                 btncolor.forEach(color=>x.push(color));
-                 x[index]="yellow";
-                 setbtncolor(x);
-
-                 let t=[];
-                 btntext.forEach(text=>t.push(text));
-                 t[index]="Saved"
-                 setbtntext(t);
-            })
+             })
              .catch(error=>{
                  console.log(`Error received: ${error}`);
              })
@@ -46,11 +31,12 @@ function ResultsTable(props){
                     <th className="col" style={{width: "10%"}}>Image</th>
                     <th className="col" style={{width: "20%"}}>Description</th>
                     <th className="col" style={{width: "10%"}}>VIN</th>
-                    <th className="col" style={{width: "9%"}}>Price</th>
-                    <th className="col" style={{width: "9%"}}>Mileage</th>
+                    <th className="col" style={{width: "7%"}}>Price</th>
+                    <th className="col" style={{width: "7%"}}>Mileage</th>
                     <th className="col text-center" style={{width: "5%"}}>DOM</th>
-                    <th className="col" style={{width: "20%"}}>Source</th>
-                    <th className="col text-center" style={{width: "10%"}}>Distance</th>
+                    <th className="col" style={{width: "17%"}}>Source</th>
+                    <th className="col" style={{width: "10%"}}>Saved</th>
+                    <th className="col text-center" style={{width: "7%"}}>Distance</th>
                     <th className="col text-center" style={{width: "7%"}}>Option</th>
                 </tr>
             </thead>
@@ -83,11 +69,14 @@ function ResultsTable(props){
                             <td data-th="Source" className="align-middle">
                                 {car.source}
                             </td>
+                            <td data-th="Saved" className="align-middle text-center">
+                                {car.date.split('T')[0]}
+                            </td>
                             <td data-th="Distance" className="align-middle text-center">
                                 {NumbersWithCommas(car.dist)}
                             </td>
                             <td data-th="Options" className="align-middle text-center">
-                                <button className="btn" style={{backgroundColor: btncolor[index]}} onClick={() => saveCar(car,index)}>{btntext[index]}</button> <br/>
+                                <button className="btn btnDlt" onClick={() => deleteCar(car)}>Delete</button> <br/>
                             </td>
                         </tr>
                     )

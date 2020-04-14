@@ -23,7 +23,7 @@ function Navbar() {
                 to="/saved"
                 className="nav-link menuItem"
               >
-                Buying a Car
+                Saved cars
               </NavLink>
           </li>
           <li className="nav-item menuItem">

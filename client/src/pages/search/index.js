@@ -9,7 +9,7 @@ import ResultsStats from './ResultsStats';
 import ResultsTable from './ResultsTable';
 import NationalChart from './NationalChart';
 import NumbersWithCommas from '../../utils/NumbersWithCommas';
-import CarTable from './CarTable';
+import NationalCurve from './NationalCurve';
 
 const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
@@ -164,7 +164,6 @@ const Selling = () =>{
   async function handleFormSubmit(event) {
     event.preventDefault();
         let data=JSON.parse(localStorage.getItem("data"));
-        console.log(data);
 
         //***********************************************************************/
         //  After getting the results from the API, will do some data cleaning  */
@@ -253,7 +252,8 @@ const Selling = () =>{
                                         placeholder="ZIP Code"/>
 `
                     <button className="btn btn-white bg-primary mb-2 mx-5" type="submit" 
-                            disabled={!formObject.VIN||!formObject.mileage||!formObject.ZIP} onClick={handleFormSubmit}>
+                            disabled={!formObject.VIN||!formObject.mileage||!formObject.ZIP}
+                             onClick={handleFormSubmit}>
                             Search Cars
                     </button>
                 </form>
@@ -267,14 +267,11 @@ const Selling = () =>{
                         <div>
                           <ResultsStats title={`Local cars for sale by Dealer (cars with ${NumbersWithCommas(formObject.mileage-mileageRange)} and ${NumbersWithCommas(formObject.mileage-(-mileageRange))} miles located within 150 miles from ZIP code ${formObject.ZIP})`}
                                             distance="within 150 miles"
-                                             range={mileageRange} 
                                              nbr={localNbrCars} 
                                              avg={localAvgPrice} 
                                              med={localMedPrice}/>
                           <ResultsTable cars={localCars}/>
                           <ResultsStats title={`Cars for sale by Dealer nationwide with mileage between ${NumbersWithCommas(formObject.mileage-mileageRange)} and ${NumbersWithCommas(formObject.mileage-(-mileageRange))}`}
-                                            distance="nationwide"
-                                             range={mileageRange} 
                                              nbr={nbrCars} 
                                              avg={avgPrice} 
                                              med={medPrice}/>
@@ -284,14 +281,18 @@ const Selling = () =>{
                                              avg={allAvgPrice} 
                                              med={allMedPrice}/>
                           <NationalChart cars={allCars}/>
+                          <ResultsStats title={`Median price of Nationwide cars by mileage range`}
+                                             nbr={allNbrCars} 
+                                             avg={allAvgPrice} 
+                                             med={allMedPrice}/>
+                          <NationalCurve cars={allCars}/>
+
                         </div>
                               ) : (
                             <h3></h3>
                      )}
                 </div>
             </div>
-            <CarTable />
-
         </div>
     )
 };

@@ -8,7 +8,9 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import NoMatch from "./components/nomatch";
 import Navbar from "./components/navbar";
 import Search from "./pages/search";
-import Saved from "./pages/saved"
+import Saved from "./pages/saved";
+import Analysis from "./pages/analysis";
+
 function App() {
   return (
     <Router>
@@ -20,6 +22,9 @@ function App() {
           </Route>
           <Route exact path={"/saved"}>
               <Saved />
+          </Route>
+          <Route exact path="/analysis">
+              <Analysis />
           </Route>
           <Route exact path="/preferences">
           </Route>

@@ -9,6 +9,7 @@ import './ResultsTable.style.css'
 
 function ResultsTable(props){
     let data=props.cars;
+    const [showCars, setShowCars] = useState('No');    // Show cars? Yes or NO
     const [btncolor, setbtncolor] = useState(Array(data.length).fill("#20c997"));
     const [btntext, setbtntext] = useState(Array(data.length).fill("Save"));
  

@@ -28,10 +28,10 @@ function Navbar() {
           </li>
           <li className="nav-item menuItem">
               <NavLink
-                to="/preferences"
+                to="/analysis"
                 className="nav-link"
               >
-                Financial cost
+                Financial analysis
               </NavLink>
           </li>
         </ul>

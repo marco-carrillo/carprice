@@ -64,14 +64,13 @@ function GetData(cars){
 //  Function Handle State:  This will set the state variable to a state where the user wants  //
 //  to look at the cars.  Then, this will list all of the cars available for that state.      //
 //############################################################################################//
-
 const HandleState=(event)=>{
   const { name, value } = event.target;
   setShowCarsfromState(value);
 }
 
   const renderCustomBarLabel = ({ payload, x, y, width, height, value }) => {
-    return <text x={x + width / 2} y={y} fill="#666" textAnchor="middle" dy={-6}>{NumbersWithCommas(value)}</text>;
+    return <text x={x + width / 2} y={y} fill="#666" textAnchor="middle" dy={-4}>${NumbersWithCommas(value)}</text>;
   };
 
   const data=GetData(props.cars);       // Getting all of the data to show the chart
@@ -80,7 +79,7 @@ const HandleState=(event)=>{
         <div>
 
           {/* ComposedChart will present a bar/line graph that will show all data from states */}
-          <ComposedChart width={1300} height={300} data={data} margin={{top: 5, right: 30, left: 20, bottom: 5 }} >
+          <ComposedChart width={1350} height={500} data={data} margin={{top: 5, right: 30, left: 20, bottom: 5 }} >
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />

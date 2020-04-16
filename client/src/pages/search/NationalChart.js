@@ -1,9 +1,10 @@
-import React, {PureComponent,useState} from "react";
-import {BarChart, Line, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart} from 'recharts';
+import React, {useState} from "react";
+import {Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart} from 'recharts';
 import MedianPrice from "../../utils/MedianPrice";
 import AveragePrice from "../../utils/AveragePrice";
 import NumbersWithCommas from "../../utils/NumbersWithCommas";
 import ResultsTable from "./ResultsTable";
+import './NationalChart.style.css';
 
 const NationalChart=(props)=> {
     const [showCarsfromState, setShowCarsfromState] = useState('None');    // All variables entered by user
@@ -12,7 +13,7 @@ const NationalChart=(props)=> {
 //  This function will sumarize the cars by state, together with the minimun, maximum  //
 //  and median value for each state.  Then, it will sort them using median price       //
 //#####################################################################################//
-function GetData(cars){
+function GetData(cars,delivered){
 
     //*******************************************************************/
     //  First, we need to find which states are included in this search  /
@@ -41,7 +42,13 @@ function GetData(cars){
         return car.dealer.state===current_state;
       });
 
-      state_prices=state_cars.map(a=>a.price);  //  Getting the prices for the state in an array
+      if (delivered){
+        state_prices=state_cars.map(a=>a.deliveredprice);
+        console.log('delievered prices');
+      } else {
+        state_prices=state_cars.map(a=>a.price);  //  Getting the prices for the state in an array
+        console.log('face value prices');
+      }
 
       //  Now getting together the information for state
       car_data.push({
@@ -65,7 +72,7 @@ function GetData(cars){
 //  to look at the cars.  Then, this will list all of the cars available for that state.      //
 //############################################################################################//
 const HandleState=(event)=>{
-  const { name, value } = event.target;
+  const { value } = event.target;
   setShowCarsfromState(value);
 }
 
@@ -73,7 +80,7 @@ const HandleState=(event)=>{
     return <text x={x + width / 2} y={y} fill="#666" textAnchor="middle" dy={-4}>${NumbersWithCommas(value)}</text>;
   };
 
-  const data=GetData(props.cars);       // Getting all of the data to show the chart
+  const data=GetData(props.cars,props.delivered);       // Getting all of the data to show the chart
 
       return (
         <div>
@@ -91,9 +98,9 @@ const HandleState=(event)=>{
           </ComposedChart>
 
           {/* Then, it will ask the user whether it wants to go and look at a specific state and drill down on data */}
-          <div className="jumbotron jumbotron-fluid bg-primary my-0 pt-3 pb-1">
+          <div className="jumbotron jumbotron-fluid footer my-0 pt-3 pb-1">
               <form className="form-inline">
-                   <label className="mx-2 mb-2 text-white">Show me cars in the following State</label>
+                   <label className="mx-2 mb-2">Show me cars in the following State</label>
                    <select className="custom-select mb-2 mr-sm-2" id="range" name="range" onChange={HandleState}>
                         <option key="None" value="None">None</option>
                         {data.map(record=>(

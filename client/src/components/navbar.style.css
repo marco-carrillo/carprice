@@ -1,8 +1,18 @@
 .menuItem {
     font-size: 25px;
-    color: white;
+    color: #053361;
 }
 
 .menu{
-    background-color: black;
-}
+    color:#FFD900;
+    background-color: #0559ad;
+    font-size:25px;
+    font-family: 'Devonshire', cursive;
+    background-color:#FFD900;
+
+ }
+
+ .active {
+    color: #053361;
+    font-weight: bold;
+ }

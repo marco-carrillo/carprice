@@ -3,17 +3,18 @@
 //  fetch all cars with the same characteristics that are selling around the US  */
 //###############################################################################/
 import React,{useState} from "react";
-import './index.style.css'
-import axios from 'axios';
-import ResultsStats from './ResultsStats';
-import ResultsTable from './ResultsTable';
-import NationalChart from './NationalChart';
-import NumbersWithCommas from '../../utils/NumbersWithCommas';
-import NationalCurve from './NationalCurve';
+import "./index.style.css"
+import axios from "axios";
+import ResultsStats from "./ResultsStats";
+import ResultsTable from "./ResultsTable";
+import NationalChart from "./NationalChart";
+import NumbersWithCommas from "../../utils/NumbersWithCommas";
+import AveragePrice from "../../utils/AveragePrice";
+import MedianPrice from "../../utils/MedianPrice"; 
+import NationalCurve from "./NationalCurve";
 
 const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
-    const [newSearch, setnewSearch] = useState(true);             // Whether a new search was started
     const [localDataReady, setLocalDataReady] = useState(false);  // Whether data is ready or not
     const [allCars,setAllCars] =useState();                       // contains comparable cars retrieved by API
     const [allAvgPrice,setAllAvgPrice] =useState(0);              //  National average price
@@ -29,52 +30,93 @@ const Selling = () =>{
     const [localNbrCars,setLocalNbrCars]=useState(0);             //  Local number of cars
     const [mileageRange,setMileageRange]=useState(0);             //  Range for mileage search
 
+
   //############################################################################/
   // Handles updating component state when the user types into the input field */
   // For now, only the search name is being stored here.                       */
   //############################################################################/
   function handleInputChange(event) {
     const { name, value } = event.target;
-    setFormObject({...formObject, [name]: value})
-  };
 
-  //###################################################/
-  //  Following function calculates the average price */
-  //###################################################/
-  const average_price= list => {
-    let sum = 0;
-    for( let i = 0; i < list.length; i++ ){
-        sum += parseInt( list[i], 10 ); //don't forget to add the base
+    if(name!=="delivered"){
+      setFormObject({...formObject, [name]: value})
+    } else{
+      setFormObject({...formObject,[name]: event.target.checked})
     }
-    
-    return sum/list.length;
-  }
-
-  //###################################################/
-  //  Following function calculates the median price */
-  //###################################################/
-  const median_price = arr => {
-    const mid = Math.floor(arr.length / 2),
-      nums = [...arr].sort((a, b) => a - b);
-    return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
   };
 
-  //###################################################/
-  // Calculating average and median price for cars */
-  //###################################################/
-  async function calculate_stats(car_info){
+  //################################################################/
+  //  Following function determines 1 of 16 ranges based on mileage*/
+  //################################################################/
+  const getMileageClass= (mileage) =>{
+        let index=Math.floor(mileage/10000);    // Getting which of the 15 elements this belongs to
+        if(index>15){index=15};                   // All mileages above 150K will be aggregated here
 
-    let raw_prices=car_info.map(a=>a.price);  // Extracting only the prices
-
-    //********************************************************/
-    //  Will eliminate any 0 preces or undefined prices
-    //********************************************************/
-    let clean_prices=[];
-    raw_prices.forEach(price=>{
-        if(price&&price>0){clean_prices.push(price)}
-    });
-    
+        return index;
   }
+
+  //########################################################################/
+  //  Following function determines how much is the expected delivery cost */
+  //########################################################################/
+  const getDeliveredCost= (distance) =>{
+
+    let incidentals=0;
+    let shipping=0;
+    let inspection=0;
+
+    if(distance<=150){
+      incidentals=0;                // No incidentals
+      inspection=0;                 // No inspection costs
+      shipping=0;                   // No shipping required
+    } else if (distance>1500) {
+      incidentals =50;              // Fixed
+      inspection = 133;             // RepairPal estimate of inspection cost
+      shipping=1468;                // Long-distance freight
+    } else {
+      incidentals =distance*50/1500;   // Phone calls, other
+      inspection = 133;
+      if(distance <250){
+        shipping =300;
+      } else if(distance<500){
+        shipping =600;
+      } else if(distance<750){
+        shipping =800;
+      } else if(distance<1000){
+        shipping =1000;
+      } else if(distance<1250){
+        shipping =1200;
+      } else {
+        shipping =1300;
+      } 
+    }
+
+    return Math.floor(incidentals+shipping+inspection);
+}
+//##################################################################/
+  //  Following function determines 1 of 10 ranges based on distance */
+  //##################################################################/
+  const getDistanceClass= (distance) =>{
+
+    if(distance<150){
+      return 0;
+    } else if(distance>=150 && distance<250){
+      return 1;
+    } else if (distance>=250 && distance<500){
+      return 2;
+    } else if (distance >=500 && distance<750){
+      return 3;
+    } else if (distance >=750 && distance <1000){
+      return 4;
+    } else if (distance >=1000 && distance<1250){
+      return 5;
+    } else if (distance >=1250 && distance<1500){
+      return 6;
+    } else if (distance >=1500){
+      return 7;
+    }
+      return 0;
+  }
+
 
   //##############################################################/
   //  Following function defines the range of equivalent mileage */
@@ -111,7 +153,6 @@ const Selling = () =>{
   //##################################################################################/
   async function handleFormSubmit1(event) {
     event.preventDefault();
-    setnewSearch(false);
     alert(`got clicked with ${formObject.VIN}`)
 
       //******************************************/
@@ -167,9 +208,16 @@ const Selling = () =>{
 
         //***********************************************************************/
         //  After getting the results from the API, will do some data cleaning  */
-        //  any results that don't have a price will be eliminated              */
+        //  any results that don't have a price or any car with no mileage will */
+        //  be eliminated.  It will add two data categories to help classify    */
+        //  the car later on:  mileage class, and distance class.               */
         //***********************************************************************/
         let data_clean=data.filter(function(car){return car.price>0 && car.miles>0  });
+        for(let i=0;i<data_clean.length;i++){
+            data_clean[i].distanceclass=getDistanceClass(data_clean[i].dist);
+            data_clean[i].milesclass=getMileageClass(data_clean[i].miles);
+            data_clean[i].deliveredprice=data_clean[i].price+getDeliveredCost(data_clean[i].dist);
+        }
         setCars(data_clean);
 
         //*******************************************************************************/
@@ -186,8 +234,8 @@ const Selling = () =>{
 
         let local_prices=data_local.map(a=>a.price);  // Extracting only the prices
         setLocalCars(data_local);
-        setLocalAvgPrice(Math.floor(average_price(local_prices)));
-        setLocalMedPrice(Math.floor(median_price(local_prices)));
+        setLocalAvgPrice(Math.floor(AveragePrice(local_prices)));
+        setLocalMedPrice(Math.floor(MedianPrice(local_prices)));
         setLocalNbrCars(local_prices.length);
         setLocalDataReady(true);
 
@@ -202,8 +250,8 @@ const Selling = () =>{
       
         let national_prices=data_national.map(a=>a.price);  // Extracting only the prices
         setCars(data_national);
-        setAvgPrice(Math.floor(average_price(national_prices)));
-        setMedPrice(Math.floor(median_price(national_prices)));
+        setAvgPrice(Math.floor(AveragePrice(national_prices)));
+        setMedPrice(Math.floor(MedianPrice(national_prices)));
         setNbrCars(national_prices.length);
 
         //*******************************************************************************/
@@ -213,46 +261,49 @@ const Selling = () =>{
         //*******************************************************************************/
         national_prices=data_clean.map(a=>a.price);  // Extracting only the prices
         setAllCars(data_clean);
-        setAllAvgPrice(Math.floor(average_price(national_prices)));
-        setAllMedPrice(Math.floor(median_price(national_prices)));
+        setAllAvgPrice(Math.floor(AveragePrice(national_prices)));
+        setAllMedPrice(Math.floor(MedianPrice(national_prices)));
         setAllNbrCars(national_prices.length);
 
       }
-
-  function handleNewSearch(event){
-      event.preventDefault();
-  }
 
     return(
         <div>
             {/********************************************************/}
             {/* Fist row will contain a jumbotron with the VIN search*/}
             {/********************************************************/}
-            <div className="jumbotron jumbotron-fluid bg-info my-0 pt-3 pb-1">
+            <div className="jumbotron jumbotron-fluid heading my-0 pt-3 pb-1">
                 <form className="form-inline">
-                    <label className="mx-2 mb-2 text-white">VIN</label>
-                    <input type="text" className="form-control mb-2 mx-5 px-5"
+                    <label className="ml-5 mr-3 mb-2 text-white">VIN</label>
+                    <input type="text" className="form-control mb-2 mx-4 px-5"
                                         onChange={handleInputChange}
                                         id="VIN"
                                         name="VIN"
                                         placeholder="Enter VIN number"/>
 
-                    <label className="mx-2 mb-2 text-white">Mileage</label>
+                    <label className="mx-3 mb-2 text-white">Mileage</label>
                     <input type="text" className="form-control mb-2 mr-sm-4"
                                         onChange={handleInputChange}
                                         id="mileage"
                                         name="mileage"
                                         placeholder="Car Mileage"/>
 
-                    <label className="mx-2 mb-2 text-white">Zip Code</label>
+                    <label className="mx-3 mb-2 text-white">Zip Code</label>
                     <input type="text" className="form-control mb-2 mr-sm-4"
                                         onChange={handleInputChange}
                                         id="ZIP"
                                         name="ZIP"
                                         placeholder="ZIP Code"/>
-`
-                    <button className="btn btn-white bg-primary mb-2 mx-5" type="submit" 
-                            disabled={!formObject.VIN||!formObject.mileage||!formObject.ZIP}
+
+                    <input type="checkbox" className="form-check-input mb-2" 
+                                        onChange={handleInputChange}
+                                        id="delivered"
+                                        value="option1"
+                                        name="delivered"/>
+                    <label className="mx-3 mb-2 text-white">Use delivered price</label>
+
+                    <button className="btn pushButton mb-2 ml-3" type="submit" 
+                            // disabled={!formObject.VIN||!formObject.mileage||!formObject.ZIP}
                              onClick={handleFormSubmit}>
                             Search Cars
                     </button>
@@ -272,24 +323,26 @@ const Selling = () =>{
                                              med={localMedPrice}/>
                           <ResultsTable cars={localCars}/>
                           <ResultsStats title={`Cars for sale by Dealer nationwide with mileage between ${NumbersWithCommas(formObject.mileage-mileageRange)} and ${NumbersWithCommas(formObject.mileage-(-mileageRange))}`}
-                                             nbr={nbrCars} 
+                                             nbr={nbrCars}
                                              avg={avgPrice} 
                                              med={medPrice}/>
-                          <NationalChart cars={cars}/>
+                          <NationalChart cars={cars} 
+                                         delivered={formObject.delivered}/>
                           <ResultsStats title={`Cars for sale by Dealer nationwide all mileage`}
                                              nbr={allNbrCars} 
                                              avg={allAvgPrice} 
                                              med={allMedPrice}/>
-                          <NationalChart cars={allCars}/>
+                          <NationalChart cars={allCars}
+                                         delivered={formObject.delivered}/>
                           <ResultsStats title={`Median price of Nationwide cars by mileage range`}
                                              nbr={allNbrCars} 
                                              avg={allAvgPrice} 
                                              med={allMedPrice}/>
-                          <NationalCurve cars={allCars}/>
-
+                          <NationalCurve cars={allCars}
+                                         delivered={formObject.delivered}/>
                         </div>
                               ) : (
-                            <h3></h3>
+                            <div/>
                      )}
                 </div>
             </div>

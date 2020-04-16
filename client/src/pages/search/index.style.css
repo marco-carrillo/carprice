@@ -11,9 +11,24 @@
 }
 
 #range{
-    width:10%;
+    width:15%;
 }
 
 #ZIP{
     width:10%;
+}
+
+.heading{
+    background-color:  #053361;
+}
+
+.pushButton{
+    background-color:#ffd900;
+    color: #053361;
+    font-weight: bolder;    
+}
+
+.logo {
+    width: 70px;
+    height: 40px;
 }

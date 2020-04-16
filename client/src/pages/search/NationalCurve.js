@@ -2,15 +2,12 @@ import React, {PureComponent,useState} from "react";
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 import MedianPrice from "../../utils/MedianPrice";
 import AveragePrice from "../../utils/AveragePrice";
-import NumbersWithCommas from "../../utils/NumbersWithCommas";
 import ResultsTable from "./ResultsTable";
 
 const NationalChart=(props)=> {
   const [showCarsMileage, setShowCarsMileage] = useState('None');    // All variables entered by user
   const [lowMileage, setLowMileage]=useState(0);
   const [highMileage, setHighMileage]=useState(0);
-
-  console.log(props.cars);
 
 //#####################################################################################//
 //  This function will sumarize the cars by state, together with the minimun, maximum  //
@@ -63,7 +60,6 @@ function GetData(cars){
     //  Returns the aggregated data, ready to be used  /
     //*************************************************/
     graphData[15].name="150K+";
-    console.log(graphData);
     return graphData;
 
 }
@@ -182,9 +178,9 @@ const HandleMileage=(event)=>{
           </LineChart>
 
           {/* Then, it will ask the user whether it wants to go and look at a specific mileage range and drill down on data */}
-          <div className="jumbotron jumbotron-fluid bg-primary my-0 pt-3 pb-1">
+          <div className="jumbotron jumbotron-fluid footer my-0 pt-3 pb-1">
               <form className="form-inline">
-                   <label className="mx-2 mb-2 text-white">Show me cars in the following mileage range</label>
+                   <label className="mx-2 mb-2">Show me cars in the following mileage range</label>
                    <select className="custom-select mb-2 mr-sm-2" id="range" name="range" onChange={HandleMileage}>
                         <option key="None" value="None">None</option>
                         {data.map(record=>(

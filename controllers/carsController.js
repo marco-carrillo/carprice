@@ -52,7 +52,6 @@ module.exports = {
   //  Deletes a document using the ID passed */
   //******************************************/
   remove: function(req, res) {
-    console.log(req.params.id)
     db.Car
       .findById({ _id: req.params.id })
       .then(dbModel => dbModel.remove())

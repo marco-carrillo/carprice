@@ -9,7 +9,6 @@ import './ResultsTable.style.css'
 
 function ResultsTable(props){
     let data=props.cars;
-    const [showCars, setShowCars] = useState('No');    // Show cars? Yes or NO
     const [btncolor, setbtncolor] = useState(Array(data.length).fill("#20c997"));
     const [btntext, setbtntext] = useState(Array(data.length).fill("Save"));
  
@@ -48,10 +47,11 @@ function ResultsTable(props){
                     <th className="col" style={{width: "20%"}}>Description</th>
                     <th className="col" style={{width: "10%"}}>VIN</th>
                     <th className="col" style={{width: "9%"}}>Price</th>
+                    <th className="col" style={{width: "9%"}}>Delivered Price</th>
                     <th className="col" style={{width: "9%"}}>Mileage</th>
                     <th className="col text-center" style={{width: "5%"}}>DOM</th>
-                    <th className="col" style={{width: "20%"}}>Source</th>
-                    <th className="col text-center" style={{width: "10%"}}>Distance</th>
+                    <th className="col" style={{width: "15%"}}>Source</th>
+                    <th className="col text-center" style={{width: "7%"}}>Distance</th>
                     <th className="col text-center" style={{width: "7%"}}>Option</th>
                 </tr>
             </thead>
@@ -74,6 +74,9 @@ function ResultsTable(props){
                             </td>
                             <td data-th="Price" className="align-middle">
                                 ${NumbersWithCommas(car.price)}
+                            </td>
+                            <td data-th="DeliveredPrice" className="align-middle">
+                                ${NumbersWithCommas(car.deliveredprice)}
                             </td>
                             <td data-th="Mileage" className="align-middle">
                                 {NumbersWithCommas(car.miles)}

@@ -9,6 +9,7 @@ require('dotenv').config();
 // Defining methods for the booksController  */
 //********************************************/
 module.exports = {
+
   findAll: function(req, res) {
   
     db.Car

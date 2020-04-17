@@ -10,6 +10,7 @@ import Navbar from "./components/navbar";
 import Search from "./pages/search";
 import Saved from "./pages/saved";
 import Analysis from "./pages/analysis";
+import SigninSide from "./pages/signin/SignInSide";
 
 function App() {
   return (
@@ -17,7 +18,10 @@ function App() {
       <div>
         <Navbar />
         <Switch>
-          <Route exact path={["/", "/search"]}>
+        <Route exact path={"/"}>
+              <SigninSide />
+          </Route>
+          <Route exact path={"/search"}>
               <Search />
           </Route>
           <Route exact path={"/saved"}>

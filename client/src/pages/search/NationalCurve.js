@@ -172,9 +172,9 @@ const HandleMileage=(event)=>{
             <YAxis unit='U$'/>
             <Tooltip />
             <Legend />
-            <Line connectNulls type="monotone" dataKey="medianPrice" stroke="#0f0994" label={<CustomizedLabel />} activeDot={{ r: 8 }} />
-            <Line connectNulls type="monotone" dataKey="maxPrice" stroke="#53078c" label={<CustomizedLabel />} strokeDasharray="3 4 5 2"/>
-            <Line connectNulls type="monotone" dataKey="minPrice" stroke="#056117" label={<CustomizedLabel />} strokeDasharray="3 4 5 2"/>
+            <Line connectNulls type="monotone" dataKey="medianPrice" stroke="#12047a" label={<CustomizedLabel />} activeDot={{ r: 8 }} strokeWidth={4}/>
+            <Line connectNulls type="monotone" dataKey="maxPrice" stroke="#e0091b" label={<CustomizedLabel />} strokeDasharray="3 4 5 2" strokeWidth={3}/>
+            <Line connectNulls type="monotone" dataKey="minPrice" stroke="#035404" label={<CustomizedLabel />} strokeDasharray="3 4 5 2" strokeWidth={3}/>
           </LineChart>
 
           {/* Then, it will ask the user whether it wants to go and look at a specific mileage range and drill down on data */}

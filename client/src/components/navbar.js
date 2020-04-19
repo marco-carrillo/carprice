@@ -46,7 +46,7 @@ function Navbar(props) {
                 className="nav-link menuItem"
               >
                 {props.logged ? 
-                  (<button type="button" className="btn btn-danger" onClick={props.callback}>
+                  (<button type="button" className="btn event_btnm" onClick={props.callback}>
                       Logout
                   </button>) : (<div/>)
                 }

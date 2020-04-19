@@ -95,18 +95,15 @@ export default function SignInSide(props) {
   if (!userData.email || !userData.password) {
     return;
   }
-  console.log('validated email and pwd not empty');
 
   // If we have an email and password we run the loginUser functi
 
   axios.post("api/login", userData)
        .then(function() {
-            alert('User successfully authenticated');
-            console.log(props);
             props.callback(true);
         })
         .catch(err=> {
-            alert('error: ',err);
+            console.log('error: ',err);
         });    // catch
 }
 

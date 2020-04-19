@@ -15,8 +15,6 @@ module.exports = function(app) {
   // the following are all of the manager's html routes
   //******************************************************************************/
   app.get("/authenticated", function(req, res) {
-    console.log("********************authent api handler**************************")
-
     if (req.user){
       console.log("user is ok");
       res.json(true);

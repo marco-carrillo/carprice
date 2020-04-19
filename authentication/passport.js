@@ -10,7 +10,12 @@ passport.use(new LocalStrategy(
   },
   function(email, password, done) {
     // When a user tries to sign in this code runs
-    console.log(`Email: ${email}, password:  ${password}`);
+
+
+    db.User.create({email: "marco_carrillo@yahoo.com", password: "carolandkelsey"});
+    db.User.create({email: "guest@bootcamp.com", password: "12345"});
+
+
     db.User.findOne({email: email})
            .then(function(dbUser) {
                 // If there's no user with the given email

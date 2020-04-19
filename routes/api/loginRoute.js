@@ -2,7 +2,12 @@
 const db = require("../../models");
 const router = require("express").Router();
 const passport = require("../../authentication/passport");
-const isAuthenticated = require("../../authentication/isAuthenticated");
+
+//*********************************************************/
+
+
+
+
 
 //***************************************************************************/
 // Using the passport.authenticate middleware with our local strategy.
@@ -10,7 +15,6 @@ const isAuthenticated = require("../../authentication/isAuthenticated");
 // Otherwise the user will be sent an error
 //***************************************************************************/
 
-// router.route("/").post(passport.authenticate("local",{session:false}), function(req, res) {
   router.route("/").post(passport.authenticate("local"), function(req, res) {
   res.json(req.user);
 });

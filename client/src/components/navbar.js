@@ -10,9 +10,7 @@ import { PromiseProvider } from "mongoose";
 function Navbar(props) {
   return (
     <nav className="navbar navbar-expand-lg xnavbar-light xbg-light menu">
-    {/* <NavLink className="navbar-brand" to="/"> */}
         <img src={Logo} className="logo" />
-    {/* </NavLink> */}
 
     <div>
         <ul className="navbar-nav">
@@ -32,14 +30,14 @@ function Navbar(props) {
                 Saved cars
               </NavLink>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
               <NavLink
                 to="/analysis"
                 className="nav-link menuItem"
               >
                 Download search data
               </NavLink>
-          </li>
+          </li> */}
           <li className="nav-item">
               <NavLink
                 to="/logout"

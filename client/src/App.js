@@ -40,10 +40,10 @@ function handleLogout(event){
       <div>
         <Navbar logged={userLogged} callback={handleLogout}/>
         <Switch>
-          <Route exact path={"/"}>
+          {/* <Route exact path={"/"}>
               {!userLogged ? (<SigninSide callback={handleLogin}/>) : (<div/>)}
-          </Route>
-          <Route exact path={"/search"}>
+          </Route> */}
+          <Route exact path={["/","/search"]}>
               {!userLogged ? (<SigninSide callback={handleLogin}/>) : (<Search />)}
           </Route>
           <Route exact path={"/saved"}>

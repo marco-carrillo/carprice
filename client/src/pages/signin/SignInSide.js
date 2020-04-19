@@ -20,7 +20,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
-        Kar-Marc
+        M-car
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -67,7 +67,7 @@ export default function SignInSide(props) {
   const classes = useStyles();
   const [userEmail,setUserEmail]= useState();
   const [userPassword,setUserPassword]=useState();
-  const [formObject,setFormObject]=useState();
+  const [unsuccessfulLogin,setUnsuccessfulLogin]=useState(false);
 
   //############################################################################/
   // Handles updating component state when the user types into the input field */
@@ -80,6 +80,7 @@ export default function SignInSide(props) {
       } else if(name==="password"){
         setUserPassword(value);
       }
+      setUnsuccessfulLogin(false);  // Considers a new attempt, eliminates error message
   };
 
   //#######################################################/
@@ -103,6 +104,7 @@ export default function SignInSide(props) {
             props.callback(true);
         })
         .catch(err=> {
+            setUnsuccessfulLogin(true);
             console.log('error: ',err);
         });    // catch
 }
@@ -169,6 +171,9 @@ export default function SignInSide(props) {
                   {"By clicking here, I agree I am an authorized user and agree to abide by the license/use agreement"}
                 </Link>
               </Grid>
+              <Typography align="center" color="error" display="block">
+                    {unsuccessfulLogin ? "Either the e-mail or the password are invalie.  Please try again" : ""}
+              </Typography>
             </Grid>
             <Box mt={5}>
               <Copyright />

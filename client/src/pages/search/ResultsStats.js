@@ -6,6 +6,7 @@ const ResultsStats=(props)=>{
     return(
         <div className="jumbotron jumbotron-fluid header xbg-info xtext-white my-2 pt-3 pb-1">
             <h4 className="text-center">{props.title}</h4>
+            <h5 className="text-center">{props.subtitle}</h5>
             <div className="row">
                 <div className="col-md-4">
                   <h5 className="text-center"># of cars={NumberWithCommas(props.nbr)}</h5>

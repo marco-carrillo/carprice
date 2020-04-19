@@ -13,7 +13,7 @@ const NationalChart=(props)=> {
 //  This function will sumarize the cars by state, together with the minimun, maximum  //
 //  and median value for each state.  Then, it will sort them using median price       //
 //#####################################################################################//
-function GetData(cars){
+function GetData(cars,delivered){
 
     //*******************************************************************/
     //  First things first, we need to create a multidimensional array  */
@@ -26,13 +26,21 @@ function GetData(cars){
     //  an array. Element 0 will be 0-10K miles, element 1 will be 10K-19,999 miles, etc. */
     //*************************************************************************************/
     let index=0;
-    cars.forEach(car=>{
+    console.log(delivered);
 
+    cars.forEach(car=>{
+     
       index=Math.floor(car.miles/10000);    // Getting which of the 15 elements this belongs to
       if(index>15){index=15};               // All mileages above 150K will be aggregated here
-      dataSeries[index].push(car.price);
+      if(delivered){
+         dataSeries[index].push(car.deliveredprice);
+      } else {
+         dataSeries[index].push(car.price);
+      }
 
     });
+
+    console.log(dataSeries);
 
     //*****************************************************/
     //  Creating the response array (array of 15 objects) */
@@ -139,10 +147,6 @@ const HandleMileage=(event)=>{
         setHighMileage(9999999);
         break;
   }
-
-  console.log(value);
-  console.log(lowMileage);
-  console.log(highMileage);
 }
 
 //#############################################################################################/
@@ -160,11 +164,11 @@ const HandleMileage=(event)=>{
     }
   };
  
-  const data=GetData(props.cars);       // Getting all of the data to show the chart
+  const data=GetData(props.cars,props.delivered);       // Getting all of the data to show the chart
 
       return (
         <div>
-          <LineChart width={1350} height={500} data={GetData(props.cars)}
+          <LineChart width={1350} height={500} data={GetData(props.cars, props.delivered)}
               margin={{top: 5, right: 30, left: 20, bottom: 5 }}  >
 
             <CartesianGrid strokeDasharray="3 3" />

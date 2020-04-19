@@ -16,20 +16,32 @@ import NationalCurve from "./NationalCurve";
 const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
     const [localDataReady, setLocalDataReady] = useState(false);  // Whether data is ready or not
-    const [allCars,setAllCars] =useState();                       // contains comparable cars retrieved by API
-    const [allAvgPrice,setAllAvgPrice] =useState(0);              //  National average price
-    const [allMedPrice,setAllMedPrice] =useState(0);              //  National median price
-    const [allNbrCars,setAllNbrCars]=useState(0);                 //  Local number of cars
+
+    // Setting statistics for comparable local cars (cars within 150 miles) that have
+    // similar mileage and characteristics as the VIN submitted
+    const [localCars,setLocalCars]=useState();                    //  Info with local car information
+    const [localAvgPrice,setLocalAvgPrice] =useState(0);          //  Local average price comparable cars
+    const [localMedPrice,setLocalMedPrice] =useState(0);          //  Local median price comparable cars
+    const [localNbrCars,setLocalNbrCars]=useState(0);             //  Local number of comparable cars
+    const [mileageRange,setMileageRange]=useState(0);             //  Range for mileage search for a car to be comparable
+
+    // Setting statistics for comparable national cars (cars nationally) that have
+    // similar mileage and characteristics as the VIN submitted
     const [cars,setCars] =useState();                             // contains comparable cars retrieved by API
     const [avgPrice,setAvgPrice] =useState(0);                    //  National average price
     const [medPrice,setMedPrice] =useState(0);                    //  National median price
-    const [nbrCars,setNbrCars]=useState(0);                       //  Local number of cars
-    const [localCars,setLocalCars]=useState();                    //  Info with local car information
-    const [localAvgPrice,setLocalAvgPrice] =useState(0);          //  Local average price
-    const [localMedPrice,setLocalMedPrice] =useState(0);          //  Local median price
-    const [localNbrCars,setLocalNbrCars]=useState(0);             //  Local number of cars
-    const [mileageRange,setMileageRange]=useState(0);             //  Range for mileage search
+    const [avgPriceDlv,setAvgPriceDlv] =useState(0);              //  National average price delivered
+    const [medPriceDlv,setMedPriceDlv] =useState(0);              //  National median price delivered
+    const [nbrCars,setNbrCars]=useState(0);                       //  National number of cars
 
+    // Setting statistics for all cars nationwide regardless of milegage but that
+    // have same VIN characteristics
+    const [allCars,setAllCars] =useState();                       // contains comparable cars retrieved by API
+    const [allAvgPrice,setAllAvgPrice] =useState(0);              //  National average price all mileage
+    const [allMedPrice,setAllMedPrice] =useState(0);              //  National median price all mileage
+    const [allAvgPriceDlv,setAllAvgPriceDlv] =useState(0);        //  National average price delivered all mileage
+    const [allMedPriceDlv,setAllMedPriceDlv] =useState(0);        //  National median price delivered all mileage
+    const [allNbrCars,setAllNbrCars]=useState(0);                 //  National number of cars all mileage
 
   //############################################################################/
   // Handles updating component state when the user types into the input field */
@@ -159,7 +171,7 @@ const Selling = () =>{
       //  Setting the API query to call the API  */
       //******************************************/
       let zipcode=formObject.ZIP;
-      let API_key=console.log(process.env.REACT_APP_MKTCHECK_APIKEY);
+      let API_key=process.env.REACT_APP_MKTCHECK_APIKEY;
       let start=0;
 
       let APIQuery=`https://marketcheck-prod.apigee.net/v2/search/car/active`+
@@ -239,31 +251,39 @@ const Selling = () =>{
         setLocalNbrCars(local_prices.length);
         setLocalDataReady(true);
 
-        //*******************************************************************************/
-        //  The second step is to obtain a "national price", which is the median price  */
-        //  of the car broken down by state, minimun, maximum. median prices            */
-        //*******************************************************************************/
-
+        //***********************************************************************************/
+        //  The second step is to obtain a "national price", which is the median price of   */
+        //  comparable cars broken down by state, minimun, maximum. median prices.  We will */
+        //  calculate both the asking price and the delivered price.                        */
+        //***********************************************************************************/
         let data_national=data_clean.filter(function(car){
           return car.miles>=lower_miles && car.miles<= higher_miles
         })
       
-        let national_prices=data_national.map(a=>a.price);  // Extracting only the prices
+        let national_prices=data_national.map(a=>a.price);  // Extracting only the asking prices
         setCars(data_national);
         setAvgPrice(Math.floor(AveragePrice(national_prices)));
         setMedPrice(Math.floor(MedianPrice(national_prices)));
         setNbrCars(national_prices.length);
 
+        national_prices=data_national.map(a=>a.deliveredprice);  // Extracting only the delivered price
+        setAvgPriceDlv(Math.floor(AveragePrice(national_prices)));
+        setMedPriceDlv(Math.floor(MedianPrice(national_prices)));
+
         //*******************************************************************************/
-        //  The third step is to obtain a "national price" for all similar cars         */ 
+        //  The third step is to obtain a "national price" for all cars cars            */ 
         //  regardless of the number of miles, or distance.  This is different from the */
         //  "national price" since it considers mileage while here we do not            */
         //*******************************************************************************/
-        national_prices=data_clean.map(a=>a.price);  // Extracting only the prices
+        national_prices=data_clean.map(a=>a.price);  // Extracting only the asking prices
         setAllCars(data_clean);
         setAllAvgPrice(Math.floor(AveragePrice(national_prices)));
         setAllMedPrice(Math.floor(MedianPrice(national_prices)));
         setAllNbrCars(national_prices.length);
+
+        national_prices=data_clean.map(a=>a.deliveredprice);  // Extracting only the delivered prices
+        setAllAvgPriceDlv(Math.floor(AveragePrice(national_prices)));
+        setAllMedPriceDlv(Math.floor(MedianPrice(national_prices)));
 
       }
 
@@ -317,27 +337,30 @@ const Selling = () =>{
                     {localDataReady ? (
                         <div>
                           <ResultsStats title={`Local cars for sale by Dealer (cars with ${NumbersWithCommas(formObject.mileage-mileageRange)} and ${NumbersWithCommas(formObject.mileage-(-mileageRange))} miles located within 150 miles from ZIP code ${formObject.ZIP})`}
-                                            distance="within 150 miles"
+                                             subtitle={formObject.delivered ? "Delivered" : "Asking price"}
                                              nbr={localNbrCars} 
                                              avg={localAvgPrice} 
                                              med={localMedPrice}/>
                           <ResultsTable cars={localCars}/>
                           <ResultsStats title={`Cars for sale by Dealer nationwide with mileage between ${NumbersWithCommas(formObject.mileage-mileageRange)} and ${NumbersWithCommas(formObject.mileage-(-mileageRange))}`}
+                                             subtitle={formObject.delivered ? "Delivered" : "Asking price"}
                                              nbr={nbrCars}
-                                             avg={avgPrice} 
-                                             med={medPrice}/>
+                                             avg={formObject.delivered ? avgPriceDlv : avgPrice} 
+                                             med={formObject.delivered ? medPriceDlv : medPrice}/>
                           <NationalChart cars={cars} 
                                          delivered={formObject.delivered}/>
                           <ResultsStats title={`Cars for sale by Dealer nationwide all mileage`}
+                                             subtitle={formObject.delivered ? "Delivered" : "Asking price"}
                                              nbr={allNbrCars} 
-                                             avg={allAvgPrice} 
-                                             med={allMedPrice}/>
+                                             avg={formObject.delivered ? allAvgPriceDlv : allAvgPrice} 
+                                             med={formObject.delivered ? allMedPriceDlv : allMedPrice}/>
                           <NationalChart cars={allCars}
                                          delivered={formObject.delivered}/>
                           <ResultsStats title={`Median price of Nationwide cars by mileage range`}
+                                             subtitle={formObject.delivered ? "Delivered" : "Asking price"}
                                              nbr={allNbrCars} 
-                                             avg={allAvgPrice} 
-                                             med={allMedPrice}/>
+                                             avg={formObject.delivered ? allAvgPriceDlv : allAvgPrice} 
+                                             med={formObject.delivered ? allMedPriceDlv : allMedPrice}/>
                           <NationalCurve cars={allCars}
                                          delivered={formObject.delivered}/>
                         </div>

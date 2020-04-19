@@ -14,7 +14,6 @@ const NationalChart=(props)=> {
 //  and median value for each state.  Then, it will sort them using median price       //
 //#####################################################################################//
 function GetData(cars,delivered){
-
     //*******************************************************************/
     //  First, we need to find which states are included in this search  /
     //*******************************************************************/
@@ -86,7 +85,7 @@ const HandleState=(event)=>{
         <div>
 
           {/* ComposedChart will present a bar/line graph that will show all data from states */}
-          <ComposedChart width={1350} height={500} data={data} margin={{top: 5, right: 30, left: 20, bottom: 5 }} >
+          <ComposedChart width={1350} height={450} data={data} margin={{top: 5, right: 30, left: 20, bottom: 5 }} >
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />

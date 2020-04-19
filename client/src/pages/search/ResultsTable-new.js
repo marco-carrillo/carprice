@@ -2,7 +2,7 @@
 //  Following component will load a dataTable with all of the information required */
 //  so that the user can see all of the cars returned by the API                   */
 //**********************************************************************************/
-import React, {useState} from "react";
+import React, {Component, useState} from "react";
 import axios from "axios";
 import NumbersWithCommas from '../../utils/NumbersWithCommas';
 import './ResultsTable.style.css'

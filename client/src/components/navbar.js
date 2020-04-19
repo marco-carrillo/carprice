@@ -5,8 +5,9 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import "./navbar.style.css";
 import Logo from '../pictures/MClogo.png';
+import { PromiseProvider } from "mongoose";
 
-function Navbar() {
+function Navbar(props) {
   return (
     <nav className="navbar navbar-expand-lg xnavbar-light xbg-light menu">
     {/* <NavLink className="navbar-brand" to="/"> */}
@@ -20,15 +21,7 @@ function Navbar() {
                 to="/search"
                 className="nav-link menuItem"
               >
-                Car prices
-              </NavLink>
-          </li>
-          <li className="nav-item">
-              <NavLink
-                to="/analysis"
-                className="nav-link menuItem"
-              >
-                Delivered car prices
+                Search Car with VIN
               </NavLink>
           </li>
           <li className="nav-item">
@@ -37,6 +30,27 @@ function Navbar() {
                 className="nav-link menuItem"
               >
                 Saved cars
+              </NavLink>
+          </li>
+          <li className="nav-item">
+              <NavLink
+                to="/analysis"
+                className="nav-link menuItem"
+              >
+                Download search data
+              </NavLink>
+          </li>
+          <li className="nav-item">
+              <NavLink
+                to="/logout"
+                className="nav-link menuItem"
+              >
+                {props.logged ? 
+                  (<button type="button" className="btn btn-danger" onClick={props.callback}>
+                      Logout
+                  </button>) : (<div/>)
+                }
+                
               </NavLink>
           </li>
         </ul>

@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from "axios";
+import UserAuthenticated from "../../utils/UserAuthenticated";
 
 function Copyright() {
   return (
@@ -62,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 //******************/
 //  Main function  */
 //******************/
-export default function SignInSide() {
+export default function SignInSide(props) {
   const classes = useStyles();
   const [userEmail,setUserEmail]= useState();
   const [userPassword,setUserPassword]=useState();
@@ -86,8 +87,6 @@ export default function SignInSide() {
   //#######################################################/
   function handleSubmit(event){
   event.preventDefault();
-  console.log(userEmail);
-  console.log(userPassword);
   let userData = {
     email: userEmail,
     password: userPassword
@@ -103,12 +102,12 @@ export default function SignInSide() {
   axios.post("api/login", userData)
        .then(function() {
             alert('User successfully authenticated');
-            // If there's an error, log the error
+            console.log(props);
+            props.callback(true);
         })
         .catch(err=> {
             alert('error: ',err);
         });    // catch
-
 }
 
   return (

@@ -3,40 +3,63 @@
 //  search and saved which come from the Navigational bar component.  /books/:id   */
 //  will come from clicking on a specific items wrapped within Books.              */
 //**********************************************************************************/
-import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NoMatch from "./components/nomatch";
 import Navbar from "./components/navbar";
 import Search from "./pages/search";
 import Saved from "./pages/saved";
 import Analysis from "./pages/analysis";
 import SigninSide from "./pages/signin/SignInSide";
+import UserAuthenticated from "./utils/UserAuthenticated";
 
 function App() {
+  const [userLogged, setUserLogged]= useState(false);
+
+  useEffect(() => {
+  }, []);
+
+//********************************************************************/
+//  The following function will change the user status within React  */
+//********************************************************************/
+  function handleLogin(outcome) {
+    console.log(outcome);
+    setUserLogged(outcome);
+  }
+
+//********************************************************************/
+//  The following function will change the user status within React  */
+//********************************************************************/
+function handleLogout(event){
+    event.preventDefault();
+    setUserLogged(false);
+  }
+
   return (
     <Router>
       <div>
-        <Navbar />
+        <Navbar logged={userLogged} callback={handleLogout}/>
         <Switch>
-        <Route exact path={"/"}>
-              <SigninSide />
+          <Route exact path={"/"}>
+              {!userLogged ? (<SigninSide callback={handleLogin}/>) : (<div/>)}
           </Route>
           <Route exact path={"/search"}>
-              <Search />
+              {!userLogged ? (<SigninSide callback={handleLogin}/>) : (<Search />)}
           </Route>
           <Route exact path={"/saved"}>
-              <Saved />
+              {!userLogged ? (<SigninSide callback={handleLogin}/>) : (<Saved />)}
           </Route>
           <Route exact path="/analysis">
-              <Analysis />
+              {!userLogged ? (<SigninSide callback={handleLogin}/>) : (<Analysis />)}
           </Route>
-          <Route exact path="/preferences">
+          <Route exact path="/logout">
+              <Redirect to="/"/>
           </Route>
           <Route>
             <NoMatch />
           </Route>
         </Switch>
-      </div>
+        </div>
     </Router>
   );
 }

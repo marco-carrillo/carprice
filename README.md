@@ -42,7 +42,7 @@ The collection "users" has been created in MongoDb to store the user e-mail and 
 
 Once the user has been able to log in, a logout button will be available so that the user can leave the application. 
 
-![Login picture](./login-screen.png =250x)
+<img src="login-screen.png" alt="login" width="250"/>
 
 
 #  Technologies / APIs utilized for this project

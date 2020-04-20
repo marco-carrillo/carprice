@@ -42,8 +42,7 @@ The collection "users" has been created in MongoDb to store the user e-mail and 
 
 Once the user has been able to log in, a logout button will be available so that the user can leave the application. 
 
-<img src="login-screen.png" alt="login" width="250"/>
-
+<img src="login-screen.png" alt="login" width="600"/>
 
 #  Technologies / APIs utilized for this project
 
@@ -57,14 +56,29 @@ The API selected is Marketplace API, one of the largest open automobile for sale
 
 This application has been deployed to Heroku at https://kar-marc-price.herokuapp.com/
 
-##  Use of the application and busienss value
+##  Use of the application and business value
 
-Once the user knows which vehicle wants to price (either to sell one of his/her own or to match a car that will likely be bought), it enters the information including the mileage and the zip code.  The application will provide the following information:
+Once the user knows which vehicle wants to price (either to sell one of his/her own or to match a car that will likely be bought), it enters the information including the mileage and the zip code.
+
+<img src="input-screen.png" alt="login" width="600"/>
+
+The application, in return, will provide the following information:
 
 * A list of all local cars with similar mileage.  This will show the user other alternatives that can be easily compared and researched to ensure that any price is competitive.
+
+<img src="response-local.png" alt="login" width="600"/>
+
 * A chart showing all cars by state with similar mileage.  This option will allow the user to see emerging trends in other parts of the country.  Is a model price different at other states?  Is that a viable option based on the distance / cost of delivery?
+
+<img src="response-national1.png" alt="login" width="600"/>
+
 * A chart showing all cars by state will all mileage.  What cars are available nationwide regardless of mileage?  This is important particularly to those that don't care as much as the mileage or have the mechanical expertise to judge the shape/condition of internal components skipping the mileage heuristic.
+
+<img src="response-national2.png" alt="login" width="600"/>
+
 * A chart showing how prices for the same model change with mileage.  This is an excellent price-benefit analysis since the user can see the impact of mileage in prices and see whether there is a big steep premium to be paid for a lower-mileage car.
+
+<img src="response-local-by-mileage.png" alt="login" width="600"/>
 
 ##  Overall application demonstration
 

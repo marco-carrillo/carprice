@@ -47,8 +47,6 @@ const Selling = () =>{
     const [allMedPriceDlv,setAllMedPriceDlv] =useState(0);        //  National median price delivered all mileage
     const [allNbrCars,setAllNbrCars]=useState(0);                 //  National number of cars all mileage
 
-
-
   //############################################################################/
   // Handles updating component state when the user types into the input field */
   // For now, only the search name is being stored here.                       */
@@ -175,10 +173,6 @@ const Selling = () =>{
       //******************************************/
       //  Setting the API query to call the API  */
       //******************************************/
-      console.log(process.env.REACT_APP_MKTCHECK_APIKEY);
-      console.log(process.env.MKTCHECK_APIKEY);
-      console.log(process.env);
-
       let zipcode=formObject.ZIP;
       let API_key=process.env.REACT_APP_MKTCHECK_APIKEY;
       let start=0;

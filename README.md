@@ -2,12 +2,14 @@
 
 This application is the final project for the Full Stack Programming Bootcamp.  It is a MERN stack using MongoDB for data storage, Express for route management, React as the UI framework and NodeJS as the server-side language.
 
-M-Car is a car simplification search engine, that allows a user to evaluate his/her options when searching for vehicles.  The idea is to allow the user the analytical and search tools to make more informed decisions by looking at the market data.  
+M-Car is a car price simplification search engine, that allows a user to evaluate what is the market value of a specific vehicles.  The idea is to provide the user with the analytical and search tools to make more informed decisions about vehicle pricing by looking at the market data.  
 
 This application intends to solve the following issues:
 
-* Lack of standardization:  It is confusing trying to compare pricing when cars come in many different configurations (V6 vrs. L4 engines, twin cam vs. aspirated models, engine configuration, standard options included, etc.).  By entering a VIN number, the user doesn't even have to enter the year, brand, model.  This application will decode the VIN and only present similar car models.
+* Prices on popular car search engines are not standards:  It is confusing trying to compare pricing when cars come in many different configurations (V6 vrs. L4 engines, turbocharged versus aspirated models, different engine configuration, etc.).  By entering a VIN number, the model searched will be those with similar configurations.  The user doesn't even have to enter the year, brand, model.  This application will decode the VIN and only present similar car models.
+
 * Missing price "arbitrage" opportunities:  Car prices vary tremendously, and by not having nationwide visibility, users might not truly understand whether the same vehicle might be less expensive at other parts of the nation.
+
 * Missing analytical tools for car prices:  While current search engines allow to see what is available, none of them present easy to understand market price analytics as this application does.
 
 #  Data input
@@ -39,6 +41,8 @@ This is a restricted applications and potential users need to establish an accou
 The collection "users" has been created in MongoDb to store the user e-mail and its password.  Responsibility of authentication remains on the server side.  The client will gather the user data, then will call the server which in turn will authenticate and either deny or confirm a user to continue.  The UI will enforce server's determination by not allowing traffic to any route other than the login screen unless previously verified.
 
 Once the user has been able to log in, a logout button will be available so that the user can leave the application. 
+
+![Login picture](./login-screen.png =250x)
 
 
 #  Technologies / APIs utilized for this project

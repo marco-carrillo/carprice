@@ -174,6 +174,10 @@ const Selling = () =>{
       //******************************************/
       //  Setting the API query to call the API  */
       //******************************************/
+      console.log(process.env.REACT_APP_MKTCHECK_APIKEY);
+      console.log(process.env.MKTCHECK_APIKEY);
+      console.log(process.env);
+      
       let zipcode=formObject.ZIP;
       let API_key=process.env.REACT_APP_MKTCHECK_APIKEY;
       let start=0;
@@ -203,7 +207,7 @@ const Selling = () =>{
       for(let i=1;i<=total_iterations;i++){
             start=i*50;  // Pagination starts at
             let APIQuery=`https://marketcheck-prod.apigee.net/v2/search/car/active`+
-                            `?api_key=${API_key}&radius=4000&zip=${zipcode}`+
+                            `?api_key=${API_key}&radius=5000&zip=${zipcode}`+
                             `&vins=${formObject.VIN}` +
                             `&rows=50&start=${start}&facet_sort=count&country=US`;
 

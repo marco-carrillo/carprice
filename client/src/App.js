@@ -23,7 +23,6 @@ function App() {
 //  The following function will change the user status within React  */
 //********************************************************************/
   function handleLogin(outcome) {
-    console.log(outcome);
     setUserLogged(outcome);
   }
 

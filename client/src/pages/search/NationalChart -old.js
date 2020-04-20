@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart} from 'recharts';
 import MedianPrice from "../../utils/MedianPrice";
 import AveragePrice from "../../utils/AveragePrice";
@@ -9,6 +9,9 @@ import './NationalChart.style.css';
 const NationalChart=(props)=> {
     const [showCarsfromState, setShowCarsfromState] = useState('None');    // All variables entered by user
 
+    userEffect(()=>{
+      
+    })
 //#####################################################################################//
 //  This function will sumarize the cars by state, together with the minimun, maximum  //
 //  and median value for each state.  Then, it will sort them using median price       //
@@ -81,7 +84,6 @@ const HandleState=(event)=>{
 
   console.log(props);
   const data=GetData(props.cars,props.delivered);       // Getting all of the data to show the chart
-  console.log(data);
 
       return (
         <div>

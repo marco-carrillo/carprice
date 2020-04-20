@@ -12,10 +12,13 @@ import NumbersWithCommas from "../../utils/NumbersWithCommas";
 import AveragePrice from "../../utils/AveragePrice";
 import MedianPrice from "../../utils/MedianPrice"; 
 import NationalCurve from "./NationalCurve";
+import Completion from "../../components/completion";
 
 const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
     const [localDataReady, setLocalDataReady] = useState(false);  // Whether data is ready or not
+    const [showProgress,setShowProgress] = useState(false);       // whether to show progress bar or not
+    const [progress,setProgress] =useState("0");                  // Percentage of API call finished
 
     // Setting statistics for comparable local cars (cars within 150 miles) that have
     // similar mileage and characteristics as the VIN submitted
@@ -42,6 +45,8 @@ const Selling = () =>{
     const [allAvgPriceDlv,setAllAvgPriceDlv] =useState(0);        //  National average price delivered all mileage
     const [allMedPriceDlv,setAllMedPriceDlv] =useState(0);        //  National median price delivered all mileage
     const [allNbrCars,setAllNbrCars]=useState(0);                 //  National number of cars all mileage
+
+
 
   //############################################################################/
   // Handles updating component state when the user types into the input field */
@@ -163,9 +168,8 @@ const Selling = () =>{
   // call Google API and retrieve sets of books.  If there are results, then update  */
   // the component's state with the list of books retrieved.                         */                               */
   //##################################################################################/
-  async function handleFormSubmit1(event) {
+  async function handleFormSubmit(event) {
     event.preventDefault();
-    alert(`got clicked with ${formObject.VIN}`)
 
       //******************************************/
       //  Setting the API query to call the API  */
@@ -175,7 +179,7 @@ const Selling = () =>{
       let start=0;
 
       let APIQuery=`https://marketcheck-prod.apigee.net/v2/search/car/active`+
-                    `?api_key=${API_key}&radius=1000&zip=${zipcode}`+
+                    `?api_key=${API_key}&radius=5000&zip=${zipcode}`+
                     `&vins=${formObject.VIN}` +
                     `&rows=50&start=${start}&facet_sort=count&country=US`;
     
@@ -192,7 +196,9 @@ const Selling = () =>{
       let total_records=Math.min(4950,parseInt(res.data.num_found)-50);
       if(total_records<0){total_records=0};
 
-      let total_iterations=Math.floor(total_records/50)+1;
+      let total_iterations=Math.floor(total_records/50)+1;         // Calculating how many total API calls
+      let pcntg=(Math.floor(100/(total_iterations+1))).toString();     // Getting an estimation of the % already completed
+      setProgress(pcntg);                                          // Updating progress bar
 
       for(let i=1;i<=total_iterations;i++){
             start=i*50;  // Pagination starts at
@@ -201,22 +207,17 @@ const Selling = () =>{
                             `&vins=${formObject.VIN}` +
                             `&rows=50&start=${start}&facet_sort=count&country=US`;
 
-            let res=await axios.get(APIQuery);  // Calling the same API but starting at a higher row
-            let subset=res.data.listings;
-            console.log('Data is ',subset);
-            data.push(...subset);                  // Adding the subset to the overall data
-        }
+            let res=await axios.get(APIQuery);           // Calling the same API but starting at a higher row
+            let subset=res.data.listings;                // Getting response
+            data.push(...subset);                        // Adding the subset to the overall data
+            pcntg=(Math.floor(100*(i+1)/(total_iterations+1))).toString();   // Calculating % API calls completed
+            setProgress(pcntg);                          // Updating progress bar 
+          }
 
         console.log(data);  // complete data set
-        localStorage.setItem("data",JSON.stringify(data));
-  };
-
-  //###############################################/
-  //  Second part of the API (manipulating data)  */
-  //###############################################/
-  async function handleFormSubmit(event) {
-    event.preventDefault();
-        let data=JSON.parse(localStorage.getItem("data"));
+        // localStorage.setItem("data",JSON.stringify(data));
+        // let data=JSON.parse(localStorage.getItem("data"));
+        
 
         //***********************************************************************/
         //  After getting the results from the API, will do some data cleaning  */
@@ -225,6 +226,7 @@ const Selling = () =>{
         //  the car later on:  mileage class, and distance class.               */
         //***********************************************************************/
         let data_clean=data.filter(function(car){return car.price>0 && car.miles>0  });
+
         for(let i=0;i<data_clean.length;i++){
             data_clean[i].distanceclass=getDistanceClass(data_clean[i].dist);
             data_clean[i].milesclass=getMileageClass(data_clean[i].miles);
@@ -242,14 +244,13 @@ const Selling = () =>{
 
         let data_local=data_clean.filter(function(car){
             return car.miles>=lower_miles && car.miles<= higher_miles && car.dist<150
-        })
+        });
 
         let local_prices=data_local.map(a=>a.price);  // Extracting only the prices
         setLocalCars(data_local);
         setLocalAvgPrice(Math.floor(AveragePrice(local_prices)));
         setLocalMedPrice(Math.floor(MedianPrice(local_prices)));
         setLocalNbrCars(local_prices.length);
-        setLocalDataReady(true);
 
         //***********************************************************************************/
         //  The second step is to obtain a "national price", which is the median price of   */
@@ -259,7 +260,7 @@ const Selling = () =>{
         let data_national=data_clean.filter(function(car){
           return car.miles>=lower_miles && car.miles<= higher_miles
         })
-      
+
         let national_prices=data_national.map(a=>a.price);  // Extracting only the asking prices
         setCars(data_national);
         setAvgPrice(Math.floor(AveragePrice(national_prices)));
@@ -284,6 +285,12 @@ const Selling = () =>{
         national_prices=data_clean.map(a=>a.deliveredprice);  // Extracting only the delivered prices
         setAllAvgPriceDlv(Math.floor(AveragePrice(national_prices)));
         setAllMedPriceDlv(Math.floor(MedianPrice(national_prices)));
+
+
+        //**************************************************************************/
+        //  Now that all data has been calculated, we can render all of the data   */
+        //**************************************************************************/
+        setLocalDataReady(true);
 
       }
 
@@ -341,7 +348,7 @@ const Selling = () =>{
                                              nbr={localNbrCars} 
                                              avg={localAvgPrice} 
                                              med={localMedPrice}/>
-                          <ResultsTable cars={localCars}/>
+                          {localCars.length>0 ? (<ResultsTable cars={localCars}/>) :(<div/>)}
                           <ResultsStats title={`Cars for sale by Dealer nationwide with mileage between ${NumbersWithCommas(formObject.mileage-mileageRange)} and ${NumbersWithCommas(formObject.mileage-(-mileageRange))}`}
                                              subtitle={formObject.delivered ? "Delivered" : "Asking price"}
                                              nbr={nbrCars}
@@ -354,18 +361,18 @@ const Selling = () =>{
                                              nbr={allNbrCars} 
                                              avg={formObject.delivered ? allAvgPriceDlv : allAvgPrice} 
                                              med={formObject.delivered ? allMedPriceDlv : allMedPrice}/>
-                          <NationalChart cars={allCars}
-                                         delivered={formObject.delivered}/>
+                          {allCars.length>0 ? (<NationalChart cars={allCars}
+                                                    delivered={formObject.delivered}/> ) :(<div/>)}
                           <ResultsStats title={`Median price of Nationwide cars by mileage range`}
                                              subtitle={formObject.delivered ? "Delivered" : "Asking price"}
                                              nbr={allNbrCars} 
                                              avg={formObject.delivered ? allAvgPriceDlv : allAvgPrice} 
                                              med={formObject.delivered ? allMedPriceDlv : allMedPrice}/>
-                          <NationalCurve cars={allCars}
-                                         delivered={formObject.delivered}/>
+                          {allCars.length>0 ? (<NationalCurve cars={allCars}
+                                         delivered={formObject.delivered}/> ) :(<div/>)}
                         </div>
                               ) : (
-                            <div/>
+                              <Completion progress={progress}/>
                      )}
                 </div>
             </div>

@@ -13,6 +13,7 @@ import AveragePrice from "../../utils/AveragePrice";
 import MedianPrice from "../../utils/MedianPrice"; 
 import NationalCurve from "./NationalCurve";
 import Completion from "../../components/completion";
+require('dotenv').config();
 
 const Selling = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
@@ -177,7 +178,7 @@ const Selling = () =>{
       console.log(process.env.REACT_APP_MKTCHECK_APIKEY);
       console.log(process.env.MKTCHECK_APIKEY);
       console.log(process.env);
-      
+
       let zipcode=formObject.ZIP;
       let API_key=process.env.REACT_APP_MKTCHECK_APIKEY;
       let start=0;

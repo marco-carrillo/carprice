@@ -8,26 +8,30 @@ import {
   MDBCardBody,
   MDBBadge
 } from 'mdbreact';
+import "./CarTable.style.css"
 
 class CarTable extends React.Component {
-  state = {
-    data: {},
-    records:"10",
-    gender: "both",
-    nationality: "all"
-  };
+  state = { data: {} };
 
   //*********************************************************/
   //  will wait until component loads before fetching data   /
   //*********************************************************/
   componentDidMount() {
-       this.getsRandomEmployees(10);  // Calls to fetch 100 users from API
+       this.getsCars();
+  }
+
+  //************************************************************************************/
+  //  The following function will open a new tab with the URL passed by the Datatable   /
+  //  that was clicked by the user.                                                     /
+  //************************************************************************************/
+  handleClick=(link)=>{
+    window.open(link,"_blank");
   }
 
   //********************************************************************************************/
   //  This function calls the API that returns random names to be included in the dataTable    */
   //********************************************************************************************/
-  getsRandomEmployees = () => {
+  getsCars = () => {
 
         let rawdata = this.props.cars;
 
@@ -90,7 +94,8 @@ class CarTable extends React.Component {
           delivered: row.deliveredprice,
           mileage: row.miles,
           dom: row.dom,
-          distance: row.dist
+          distance: row.dist,
+          clickEvent: () => this.handleClick(row.vdp_url)
         }));
 
         //******************************************/

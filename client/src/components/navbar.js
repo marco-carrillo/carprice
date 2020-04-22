@@ -19,7 +19,7 @@ function Navbar(props) {
                 to="/search"
                 className="nav-link menuItem"
               >
-                Search Car with VIN
+                Search Car
               </NavLink>
           </li>
           <li className="nav-item">

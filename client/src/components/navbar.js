@@ -5,7 +5,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import "./navbar.style.css";
 import Logo from '../pictures/MClogo.png';
-import { PromiseProvider } from "mongoose";
+// import { PromiseProvider } from "mongoose";
 
 function Navbar(props) {
   return (
@@ -30,21 +30,13 @@ function Navbar(props) {
                 Saved cars
               </NavLink>
           </li>
-          {/* <li className="nav-item">
-              <NavLink
-                to="/analysis"
-                className="nav-link menuItem"
-              >
-                Download search data
-              </NavLink>
-          </li> */}
           <li className="nav-item">
               <NavLink
                 to="/logout"
                 className="nav-link menuItem"
               >
                 {props.logged ? 
-                  (<button type="button" className="btn event_btnm" onClick={props.callback}>
+                  (<button type="button" className="btn event_btnm my-0 py-2" onClick={props.callback}>
                       Logout
                   </button>) : (<div/>)
                 }

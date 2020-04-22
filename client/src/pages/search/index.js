@@ -13,6 +13,7 @@ import AveragePrice from "../../utils/AveragePrice";
 import MedianPrice from "../../utils/MedianPrice"; 
 import NationalCurve from "./NationalCurve";
 import Completion from "../../components/completion";
+import CarTable from "./CarTable";
 require('dotenv').config();
 
 const Selling = () =>{
@@ -167,7 +168,7 @@ const Selling = () =>{
   // call Google API and retrieve sets of books.  If there are results, then update  */
   // the component's state with the list of books retrieved.                         */                               */
   //##################################################################################/
-  async function handleFormSubmit(event) {
+  async function handleFormSubmit1(event) {
     event.preventDefault();
 
       //******************************************/
@@ -214,10 +215,30 @@ const Selling = () =>{
           }
 
         console.log(data);  // complete data set
-        // localStorage.setItem("data",JSON.stringify(data));
-        // let data=JSON.parse(localStorage.getItem("data"));
-        
+        localStorage.setItem("data",JSON.stringify(data));
 
+  }
+
+
+
+//  To save on API calls, comment the next three lines
+
+  async function handleFormSubmit(event) {
+    event.preventDefault();
+        let data=JSON.parse(localStorage.getItem("data"));
+
+        //**********************************************************************/
+        //  Will sort the data obtained from lowest to highest price so that   */
+        //  this is the order rendered going forward.                          */
+        //**********************************************************************/
+        if(formObject.delivered){
+          data.sort((a, b) => (a.pricedelivered > b.pricedelivered) ? 1 : -1)
+        } else {
+          data.sort((a, b) => (a.price > b.price) ? 1 : -1)
+        }
+
+        console.log(data);
+        
         //***********************************************************************/
         //  After getting the results from the API, will do some data cleaning  */
         //  any results that don't have a price or any car with no mileage will */
@@ -329,7 +350,7 @@ const Selling = () =>{
                     <label className="mx-3 mb-2 text-white">Use delivered price</label>
 
                     <button className="btn pushButton mb-2 ml-3" type="submit" 
-                            // disabled={!formObject.VIN||!formObject.mileage||!formObject.ZIP}
+                            disabled={!formObject.VIN||!formObject.mileage||!formObject.ZIP}
                              onClick={handleFormSubmit}>
                             Search Cars
                     </button>
@@ -369,6 +390,12 @@ const Selling = () =>{
                                              med={formObject.delivered ? allMedPriceDlv : allMedPrice}/>
                           {allCars.length>0 ? (<NationalCurve cars={allCars}
                                          delivered={formObject.delivered}/> ) :(<div/>)}
+                          <ResultsStats title={`Table of all Nationwide cars all mileage`}
+                                             subtitle={"Both asking price and delivered price"}
+                                             nbr={allNbrCars} 
+                                             avg={formObject.delivered ? allAvgPriceDlv : allAvgPrice} 
+                                             med={formObject.delivered ? allMedPriceDlv : allMedPrice}/>
+                          {allCars.length>0 ? (<CarTable cars={allCars}/> ) :(<div/>)}
                         </div>
                               ) : (
                               <Completion progress={progress}/>

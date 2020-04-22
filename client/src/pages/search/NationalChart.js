@@ -15,7 +15,6 @@ const NationalChart=(props)=> {
 //#####################################################################################//
 function GetData(cars,delivered){
 
-  console.log(cars);
     //*******************************************************************/
     //  First, we need to find which states are included in this search  /
     //*******************************************************************/
@@ -76,12 +75,10 @@ const HandleState=(event)=>{
 }
 
   const renderCustomBarLabel = ({ payload, x, y, width, height, value }) => {
-    return <text x={x + width / 2} y={y} fill="#666" textAnchor="middle" dy={-4}>${NumbersWithCommas(value)}</text>;
+    return <text x={x + width / 2} y={y} fill="#666" fontSize={10} textAnchor="middle" dy={-4}>${NumbersWithCommas(value)}</text>;
   };
 
-  console.log(props);
   const data=GetData(props.cars,props.delivered);       // Getting all of the data to show the chart
-  console.log(data);
 
       return (
         <div>
@@ -93,7 +90,7 @@ const HandleState=(event)=>{
             <Tooltip />
             <Legend />
             <CartesianGrid stroke="#f5f5f5" />
-            <Bar dataKey="median_price" barSize={20} fill="#051282" label={renderCustomBarLabel}/>
+            <Bar dataKey="median_price" barSize={20} fill="#051282" label={renderCustomBarLabel} style={{fontSize: '0.1rem'}}/>
             <Line type="monotone" dataKey="min_price" stroke="#37ff00" />  
             <Line type="monotone" dataKey="max_price" stroke="#ff001e" />  
           </ComposedChart>

@@ -28,6 +28,7 @@
     display: inline-block;
     z-index: 2;
     position: relative;
+    border-radius: 50%;
   }
   
   .event_btnm i {
@@ -35,6 +36,7 @@
   }
   
   .event_btnm:before {
+    border-radius: 50%;
     content: '';
     position: absolute;
     top: 0;
@@ -51,6 +53,7 @@
   }
   
   .event_btnm:after {
+    border-radius: 50%;
     content: '';
     position: absolute;
     top: 0;

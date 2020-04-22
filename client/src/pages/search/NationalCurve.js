@@ -26,8 +26,7 @@ function GetData(cars,delivered){
     //  an array. Element 0 will be 0-10K miles, element 1 will be 10K-19,999 miles, etc. */
     //*************************************************************************************/
     let index=0;
-    console.log(delivered);
-
+    
     cars.forEach(car=>{
      
       index=Math.floor(car.miles/10000);    // Getting which of the 15 elements this belongs to
@@ -39,8 +38,6 @@ function GetData(cars,delivered){
       }
 
     });
-
-    console.log(dataSeries);
 
     //*****************************************************/
     //  Creating the response array (array of 15 objects) */
@@ -140,7 +137,6 @@ const HandleMileage=(event)=>{
     case "140-150K":
         setLowMileage(140000);
         setHighMileage(149999);
-        console.log(value);
         break;
     case "150K+":
         setLowMileage(150000);

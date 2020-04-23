@@ -170,7 +170,7 @@ const Selling = () =>{
   //##################################################################################/
   async function handleFormSubmit(event) {
     event.preventDefault();
-
+    
       //******************************************/
       //  Setting the API query to call the API  */
       //******************************************/

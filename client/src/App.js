@@ -24,6 +24,7 @@ function App() {
 //********************************************************************/
   function handleLogin(outcome) {
     setUserLogged(outcome);
+    console.log(`the outcome of the signin was ${outcome}`);
   }
 
 //********************************************************************/

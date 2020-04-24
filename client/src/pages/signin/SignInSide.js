@@ -101,10 +101,12 @@ export default function SignInSide(props) {
 
   axios.post("api/login", userData)
        .then(function() {
-            props.callback(true);
+          setUnsuccessfulLogin(false);
+          props.callback(true);
         })
         .catch(err=> {
             setUnsuccessfulLogin(true);
+            props.callback(false);
             console.log('error: ',err);
         });    // catch
 }
@@ -172,7 +174,7 @@ export default function SignInSide(props) {
                 </Link>
               </Grid>
               <Typography align="center" color="error" display="block">
-                    {unsuccessfulLogin ? "Either the e-mail or the password are invalie.  Please try again" : ""}
+                    {unsuccessfulLogin ? "Either the e-mail or the password are invalid.  Please try again" : ""}
               </Typography>
             </Grid>
             <Box mt={5}>

@@ -4,10 +4,12 @@
 
 #VIN{
     width: 25%;
+    width: 300px;
 }
 
 #mileage{
     width: 10%;
+    width: 100px;
 }
 
 #range{
@@ -16,6 +18,7 @@
 
 #ZIP{
     width:10%;
+    width: 100px;
 }
 
 .heading{
@@ -25,7 +28,7 @@
 .pushButton{
     background-color:#ffd900;
     color: #053361;
-    font-weight: bolder;    
+    font-weight: bolder;  
 }
 
 .logo {

@@ -14,14 +14,17 @@ import MedianPrice from "../../utils/MedianPrice";
 import NationalCurve from "./NationalCurve";
 import Completion from "../../components/completion";
 import CarTable from "./CarTable";
+import DisplayError from "./DisplayError"
 require('dotenv').config();
 
-const Selling = () =>{
+const Searching = () =>{
     const [formObject, setFormObject] = useState({});             // All variables entered by user
     const [localDataReady, setLocalDataReady] = useState(false);  // Whether data is ready or not
     const [showProgress,setShowProgress] = useState(false);       // whether to show progress bar or not
     const [progress,setProgress] =useState("0");                  // Percentage of API call finished
-
+    const [showError,setShowError] =useState(false);              // Wether there is an error that needs to be shown to the user
+    const [inputAllowed,setInputAllowed] =useState(true);         // Wether there is an error that needs to be shown to the user
+    
     // Setting statistics for comparable local cars (cars within 150 miles) that have
     // similar mileage and characteristics as the VIN submitted
     const [localCars,setLocalCars]=useState();                    //  Info with local car information
@@ -82,15 +85,15 @@ const Selling = () =>{
     let inspection=0;
 
     if(distance<=150){
-      incidentals=0;                // No incidentals
-      inspection=0;                 // No inspection costs
-      shipping=0;                   // No shipping required
-    } else if (distance>1500) {
-      incidentals =50;              // Fixed
-      inspection = 133;             // RepairPal estimate of inspection cost
-      shipping=1468;                // Long-distance freight
+      incidentals=0;                  // No incidentals
+      inspection=0;                   // No inspection costs
+      shipping=0;                     // No shipping required
+    } else if (distance>2000) {
+      incidentals =75;                // Fixed
+      inspection = 133;               // RepairPal estimate of inspection cost
+      shipping=2000;                  // Long-distance freight
     } else {
-      incidentals =distance*50/1500;   // Phone calls, other
+      incidentals =75;   // Phone calls, other
       inspection = 133;
       if(distance <250){
         shipping =300;
@@ -102,9 +105,13 @@ const Selling = () =>{
         shipping =1000;
       } else if(distance<1250){
         shipping =1200;
+      } else if (distance <1500){
+        shipping =1400;
+      } else if (distance <1800){
+        shipping = 1700;
       } else {
-        shipping =1300;
-      } 
+        shipping =1850;
+      }
     }
 
     return Math.floor(incidentals+shipping+inspection);
@@ -133,7 +140,6 @@ const Selling = () =>{
     }
       return 0;
   }
-
 
   //##############################################################/
   //  Following function defines the range of equivalent mileage */
@@ -170,7 +176,12 @@ const Selling = () =>{
   //##################################################################################/
   async function handleFormSubmit(event) {
     event.preventDefault();
-    
+
+      //************************************/
+      //  Disables input of any more data  */
+      //************************************/
+      setInputAllowed(false);
+
       //******************************************/
       //  Setting the API query to call the API  */
       //******************************************/
@@ -182,11 +193,23 @@ const Selling = () =>{
                     `?api_key=${API_key}&radius=5000&zip=${zipcode}`+
                     `&vins=${formObject.VIN}` +
                     `&rows=50&start=${start}&facet_sort=count&country=US`;
-    
+                 
       //***************************************/
       //  Calling the API  for the first time */
       //**************************************/
       let res=await axios.get(APIQuery);
+      console.log(res);
+
+      //*************************************************************************/
+      // If the response is anything other than HTPP 200, shows a message that  */
+      // something went wrong at the very bottom of the application             */
+      //*************************************************************************/
+      if(res.status!==200 || res.data.num_found===0){
+        setShowError(true);          // Enables display of error
+        setLocalDataReady(false);    // In case something is being displayed, shows it
+        return;                      // Execution doesn't continue
+      }
+
       let data=res.data.listings;
 
       //********************************************************************************/
@@ -213,7 +236,6 @@ const Selling = () =>{
             pcntg=(Math.floor(100*(i+1)/(total_iterations+1))).toString();   // Calculating % API calls completed
             setProgress(pcntg);                          // Updating progress bar 
           }
-
 
         //**********************************************************************/
         //  The following lines can be un-commented so that the application 
@@ -272,9 +294,15 @@ const Selling = () =>{
 
         let local_prices=data_local.map(a=>a.price);  // Extracting only the prices
         setLocalCars(data_local);
-        setLocalAvgPrice(Math.floor(AveragePrice(local_prices)));
-        setLocalMedPrice(Math.floor(MedianPrice(local_prices)));
-        setLocalNbrCars(local_prices.length);
+        if(local_prices.length>0){
+          setLocalAvgPrice(Math.floor(AveragePrice(local_prices)));
+          setLocalMedPrice(Math.floor(MedianPrice(local_prices)));
+          setLocalNbrCars(local_prices.length);
+        } else{
+          setLocalAvgPrice(0);
+          setLocalMedPrice(0);
+          setLocalNbrCars(0);
+        }
 
         //***********************************************************************************/
         //  The second step is to obtain a "national price", which is the median price of   */
@@ -287,13 +315,24 @@ const Selling = () =>{
 
         let national_prices=data_national.map(a=>a.price);  // Extracting only the asking prices
         setCars(data_national);
-        setAvgPrice(Math.floor(AveragePrice(national_prices)));
-        setMedPrice(Math.floor(MedianPrice(national_prices)));
-        setNbrCars(national_prices.length);
+        if(national_prices.length>0){
+          setAvgPrice(Math.floor(AveragePrice(national_prices)));
+          setMedPrice(Math.floor(MedianPrice(national_prices)));
+          setNbrCars(national_prices.length);
+        } else{
+          setAvgPrice(0);
+          setMedPrice(0);
+          setNbrCars(0);
+        }
 
         national_prices=data_national.map(a=>a.deliveredprice);  // Extracting only the delivered price
-        setAvgPriceDlv(Math.floor(AveragePrice(national_prices)));
-        setMedPriceDlv(Math.floor(MedianPrice(national_prices)));
+        if(national_prices.length>0){
+          setAvgPriceDlv(Math.floor(AveragePrice(national_prices)));
+          setMedPriceDlv(Math.floor(MedianPrice(national_prices)));
+      } else {
+        setAvgPriceDlv(0);
+        setMedPriceDlv(0);
+      }
 
         //*******************************************************************************/
         //  The third step is to obtain a "national price" for all cars cars            */ 
@@ -302,14 +341,24 @@ const Selling = () =>{
         //*******************************************************************************/
         national_prices=data_clean.map(a=>a.price);  // Extracting only the asking prices
         setAllCars(data_clean);
-        setAllAvgPrice(Math.floor(AveragePrice(national_prices)));
-        setAllMedPrice(Math.floor(MedianPrice(national_prices)));
-        setAllNbrCars(national_prices.length);
+        if(national_prices.length>0){
+          setAllAvgPrice(Math.floor(AveragePrice(national_prices)));
+          setAllMedPrice(Math.floor(MedianPrice(national_prices)));
+          setAllNbrCars(national_prices.length);
+        } else {
+          setAllAvgPrice(0);
+          setAllMedPrice(0);
+          setAllNbrCars(0);
+        }
 
         national_prices=data_clean.map(a=>a.deliveredprice);  // Extracting only the delivered prices
-        setAllAvgPriceDlv(Math.floor(AveragePrice(national_prices)));
-        setAllMedPriceDlv(Math.floor(MedianPrice(national_prices)));
-
+        if(national_prices.length>0){
+          setAllAvgPriceDlv(Math.floor(AveragePrice(national_prices)));
+          setAllMedPriceDlv(Math.floor(MedianPrice(national_prices)));
+        } else {
+          setAllAvgPriceDlv(0);
+          setAllMedPriceDlv(0);
+        }
 
         //**************************************************************************/
         //  Now that all data has been calculated, we can render all of the data   */
@@ -318,32 +367,52 @@ const Selling = () =>{
 
       }
 
+      //########################################################/
+      //  The following function will initialize a new search  #/
+      //########################################################/
+      const handleInitialize =(event) =>{
+        console.log('getting here');
+        event.preventDefault();
+        setLocalDataReady(false);
+        setShowError(false);
+        setInputAllowed(true);
+        setProgress("0");
+        
+        // setFormObject({...formObject,ZIP:"",mileage:0,VIN:""});
+        document.getElementById("EnterData").reset();
+        console.log('finalized it');
+      }
+
+
     return(
         <div>
             {/********************************************************/}
             {/* Fist row will contain a jumbotron with the VIN search*/}
             {/********************************************************/}
             <div className="jumbotron jumbotron-fluid heading my-0 pt-3 pb-1">
-                <form className="form-inline">
-                    <label className="ml-5 mr-3 mb-2 text-white">VIN</label>
-                    <input type="text" className="form-control mb-2 mx-4 px-5"
+                <form className="form-inline row" id="EnterData">
+                    <label className="ml-4 mr-2 mb-2 text-white ml-s-1 mr-s-1">VIN</label>
+                    <input type="text" className="form-control mb-2 mx-4 px-5 mx-s-1 px-s-1"
                                         onChange={handleInputChange}
                                         id="VIN"
                                         name="VIN"
+                                        disabled={!inputAllowed}
                                         placeholder="Enter VIN number"/>
 
-                    <label className="mx-3 mb-2 text-white">Mileage</label>
+                    <label className="mx-2 mb-2 text-white">Mileage</label>
                     <input type="text" className="form-control mb-2 mr-sm-4"
                                         onChange={handleInputChange}
                                         id="mileage"
                                         name="mileage"
+                                        disabled={!inputAllowed}
                                         placeholder="Car Mileage"/>
 
-                    <label className="mx-3 mb-2 text-white">Zip Code</label>
+                    <label className="mx-2 mb-2 text-white">Zip Code</label>
                     <input type="text" className="form-control mb-2 mr-sm-4"
                                         onChange={handleInputChange}
                                         id="ZIP"
                                         name="ZIP"
+                                        disabled={!inputAllowed}
                                         placeholder="ZIP Code"/>
 
                     <input type="checkbox" className="form-check-input mb-2" 
@@ -351,13 +420,19 @@ const Selling = () =>{
                                         id="delivered"
                                         value="option1"
                                         name="delivered"/>
-                    <label className="mx-3 mb-2 text-white">Use delivered price</label>
+                    <label className="mx-2 mb-2 text-white">Use delivered price</label>
 
                     <button className="btn pushButton mb-2 ml-3" type="submit" 
                             disabled={!formObject.VIN||!formObject.mileage||!formObject.ZIP}
                              onClick={handleFormSubmit}>
                             Search Cars
                     </button>
+
+                    <button className="btn pushButton mb-2 ml-3" 
+                             onClick={handleInitialize}>
+                            New Search
+                    </button>
+
                 </form>
             </div>
             {/*****************************************************************/}
@@ -378,8 +453,8 @@ const Selling = () =>{
                                              nbr={nbrCars}
                                              avg={formObject.delivered ? avgPriceDlv : avgPrice} 
                                              med={formObject.delivered ? medPriceDlv : medPrice}/>
-                          <NationalChart cars={cars} 
-                                         delivered={formObject.delivered}/>
+                          {cars.length>0 ? (<NationalChart cars={cars} 
+                                         delivered={formObject.delivered}/> ) : (<div/>)}
                           <ResultsStats title={`Cars for sale by Dealer nationwide all mileage`}
                                              subtitle={formObject.delivered ? "Delivered" : "Asking price"}
                                              nbr={allNbrCars} 
@@ -402,7 +477,10 @@ const Selling = () =>{
                           {allCars.length>0 ? (<CarTable cars={allCars}/> ) :(<div/>)}
                         </div>
                               ) : (
-                              <Completion progress={progress}/>
+                                <div>
+                                  <Completion progress={progress}/>
+                                  {showError ? (<DisplayError />) : (<div />)}
+                                </div>
                      )}
                 </div>
             </div>
@@ -410,4 +488,4 @@ const Selling = () =>{
     )
 };
 
-export default Selling;
+export default Searching;

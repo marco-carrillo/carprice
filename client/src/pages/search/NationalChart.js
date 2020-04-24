@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart} from 'recharts';
+import {ResponsiveContainer,Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart} from 'recharts';
 import MedianPrice from "../../utils/MedianPrice";
 import AveragePrice from "../../utils/AveragePrice";
 import NumbersWithCommas from "../../utils/NumbersWithCommas";
@@ -84,16 +84,16 @@ const HandleState=(event)=>{
         <div>
 
           {/* ComposedChart will present a bar/line graph that will show all data from states */}
-          <ComposedChart width={1350} height={450} data={data} margin={{top: 5, right: 30, left: 20, bottom: 5 }} >
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <CartesianGrid stroke="#f5f5f5" />
-            <Bar dataKey="median_price" barSize={20} fill="#051282" label={renderCustomBarLabel} style={{fontSize: '0.1rem'}}/>
-            <Line type="monotone" dataKey="min_price" stroke="#37ff00" />  
-            <Line type="monotone" dataKey="max_price" stroke="#ff001e" />  
-          </ComposedChart>
+            <ComposedChart width={1350} height={450} data={data} margin={{top: 5, right: 30, left: 20, bottom: 5 }} >
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <CartesianGrid stroke="#f5f5f5" />
+              <Bar dataKey="median_price" barSize={20} fill="#051282" label={renderCustomBarLabel} style={{fontSize: '0.1rem'}}/>
+              <Line type="monotone" dataKey="min_price" stroke="#37ff00" />  
+              <Line type="monotone" dataKey="max_price" stroke="#ff001e" />  
+            </ComposedChart>
 
           {/* Then, it will ask the user whether it wants to go and look at a specific state and drill down on data */}
           <div className="jumbotron jumbotron-fluid footer my-0 pt-3 pb-1">

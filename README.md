@@ -42,6 +42,8 @@ The collection "users" has been created in MongoDb to store the user e-mail and 
 
 Once the user has been able to log in, a logout button will be available so that the user can leave the application. 
 
+Guests can use the user id guest@bootcamp.com with password 12345
+
 <img src="login-screen.png" alt="login" width="600"/>
 
 #  Technologies / APIs utilized for this project

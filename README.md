@@ -82,4 +82,4 @@ The application, in return, will provide the following information:
 
 ##  Overall application demonstration
 
-![GIF of input](./google-books.gif)
+![GIF of input](./pricevin.gif)

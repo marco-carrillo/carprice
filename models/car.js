@@ -9,6 +9,7 @@ const carSchema = new Schema({
   vin: String,
   heading: String,
   price: Number,
+  deliveredprice: Number,
   miles: Number,
   msrp: Number,
   data_source: String,

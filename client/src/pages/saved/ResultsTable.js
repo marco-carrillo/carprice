@@ -43,6 +43,7 @@ function ResultsTable(props){
 
             <tbody>
                 {data.map((car,index)=>{
+                    console.log(car);
                     return(
                         <tr key={car.id}>
                             <td data-th="Image" className="align-middle text-center">
@@ -60,7 +61,7 @@ function ResultsTable(props){
                             <td data-th="Price" className="align-middle">
                                 ${NumbersWithCommas(car.price)}
                             </td>
-                            <td data-th="Delivered" className="align-middle">
+                            <td data-th="DeliveredPrice" className="align-middle">
                                 ${NumbersWithCommas(car.deliveredprice)}
                             </td>
                             <td data-th="Mileage" className="align-middle">

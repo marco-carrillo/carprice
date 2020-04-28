@@ -32,9 +32,9 @@ function ResultsTable(props){
                     <th className="col" style={{width: "20%"}}>Description</th>
                     <th className="col" style={{width: "10%"}}>VIN</th>
                     <th className="col" style={{width: "7%"}}>Price</th>
-                    <th className="col" style={{width: "7%"}}>Delivered</th>
                     <th className="col" style={{width: "7%"}}>Mileage</th>
                     <th className="col text-center" style={{width: "5%"}}>DOM</th>
+                    <th className="col" style={{width: "17%"}}>Source</th>
                     <th className="col" style={{width: "10%"}}>Saved</th>
                     <th className="col text-center" style={{width: "7%"}}>Distance</th>
                     <th className="col text-center" style={{width: "7%"}}>Option</th>
@@ -60,14 +60,14 @@ function ResultsTable(props){
                             <td data-th="Price" className="align-middle">
                                 ${NumbersWithCommas(car.price)}
                             </td>
-                            <td data-th="Delivered" className="align-middle">
-                                ${NumbersWithCommas(car.deliveredprice)}
-                            </td>
                             <td data-th="Mileage" className="align-middle">
                                 {NumbersWithCommas(car.miles)}
                             </td>
                             <td data-th="DOM" className="align-middle text-center">
                                 {car.dom}
+                            </td>
+                            <td data-th="Source" className="align-middle">
+                                {car.source}
                             </td>
                             <td data-th="Saved" className="align-middle text-center">
                                 {car.date.split('T')[0]}

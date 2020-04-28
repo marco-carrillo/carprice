@@ -43,7 +43,6 @@ function ResultsTable(props){
 
             <tbody>
                 {data.map((car,index)=>{
-                    console.log(car);
                     return(
                         <tr key={car.id}>
                             <td data-th="Image" className="align-middle text-center">

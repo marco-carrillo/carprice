@@ -13,8 +13,9 @@ function Saved(){
   // Loading cars upon loading the application    */
   //***********************************************/
   useEffect(() => {
-    loadCars()
-  }, [cars])
+    loadCars();
+    console.log('I am loading cars');
+  },[cars])
 
   //****************************************************/
   // Calls the API to get all saved books on the table */ 

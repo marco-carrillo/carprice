@@ -171,8 +171,7 @@ const Searching = () =>{
 
   //##################################################################################/
   // When the form is submitted, use fetch to call the server API which in turn will */
-  // call Google API and retrieve sets of books.  If there are results, then update  */
-  // the component's state with the list of books retrieved.                         */                               */
+  // call Marketcheck API.                                                           */
   //##################################################################################/
   async function handleFormSubmit(event) {
     event.preventDefault();

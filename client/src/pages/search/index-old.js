@@ -192,11 +192,12 @@ const Searching = () =>{
                     `?api_key=${API_key}&radius=5000&zip=${zipcode}`+
                     `&vins=${formObject.VIN}` +
                     `&rows=50&start=${start}&facet_sort=count&country=US`;
-                 
+
       //***************************************/
       //  Calling the API  for the first time */
       //**************************************/
       let res=await axios.get(APIQuery);
+      console.log(res);
 
       //*************************************************************************/
       // If the response is anything other than HTPP 200, shows a message that  */
@@ -215,17 +216,20 @@ const Searching = () =>{
       //  listings available in the US                                                 */ 
       //********************************************************************************/
       let total_records=Math.min(4950,parseInt(res.data.num_found)-50);
-      let total_iterations=0;
 
-      if(total_records<0){
-          total_records=0;
-          total_iterations=0;
-        } else{
-            total_iterations=Math.floor(total_records/50)+1;           // Calculating how many total API calls
-         };
+
+      let total_iterations=0;
+      if(total_records<=50){
+        total_records=0
+        total_iterations=0}
+      else {
+        total_iterations=Math.floor(total_records/50)+1;         // Calculating how many total API calls
+    };
 
       let pcntg=(Math.floor(100/(total_iterations+1))).toString();     // Getting an estimation of the % already completed
-      setProgress(pcntg);                                              // Updating progress bar
+      setProgress(pcntg);                                          // Updating progress bar
+
+      console.log(total_iterations);
 
       for(let i=1;i<=total_iterations;i++){
             start=i*50;  // Pagination starts at
@@ -253,7 +257,7 @@ const Searching = () =>{
         // }   // To end the first part of the function
         
         // async function handleFormSubmit(event) {
-        //   event.preventDefault();
+        //   event.prevetDefault();
         //       let data=JSON.parse(localStorage.getItem("data"));
 
        
@@ -375,6 +379,7 @@ const Searching = () =>{
       //  The following function will initialize a new search  #/
       //########################################################/
       const handleInitialize =(event) =>{
+        console.log('getting here');
         event.preventDefault();
         setLocalDataReady(false);
         setShowError(false);
@@ -383,6 +388,7 @@ const Searching = () =>{
         
         // setFormObject({...formObject,ZIP:"",mileage:0,VIN:""});
         document.getElementById("EnterData").reset();
+        console.log('finalized it');
       }
 
 
